@@ -13,6 +13,7 @@ const CheckoutForm = ({ contest, total }) => {
     const [clientSecret, setClientSecret] = useState('');
     const [transactionId, setTransactionId] = useState('');
     const [processing, setProcessing] = useState(false);
+
     const axiosSecure = useAxiosSecure();
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -21,11 +22,8 @@ const CheckoutForm = ({ contest, total }) => {
 
     useEffect(() => {
         if (price > 0) {
-            axiosSecure.post('/payments/create-payment-intent', { price: price })
-                .then(res => {
-                    console.log(res.data.clientSecret);
-                    setClientSecret(res.data.clientSecret);
-                })
+            axiosSecure.post('/payments/create-payment-intent', { price })
+                .then(res => setClientSecret(res.data.clientSecret))
                 .catch(err => {
                     console.error('Error creating payment intent:', err);
                     setError('Failed to initialize payment. Please try again.');
@@ -35,39 +33,30 @@ const CheckoutForm = ({ contest, total }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        if (!stripe || !elements) {
-            return;
-        }
+        if (!stripe || !elements) return;
 
         const card = elements.getElement(CardElement);
-
-        if (card === null) {
-            return;
-        }
+        if (!card) return;
 
         setProcessing(true);
         setError('');
 
-        const { error, paymentMethod } = await stripe.createPaymentMethod({
+        // Create Payment Method
+        const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({
             type: 'card',
             card
         });
 
-        if (error) {
-            console.log('payment error', error);
-            setError(error.message);
+        if (pmError) {
+            setError(pmError.message);
             setProcessing(false);
             return;
-        } else {
-            console.log('payment method', paymentMethod);
-            setError('');
         }
 
-        // confirm payment
+        // Confirm Card Payment
         const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
             payment_method: {
-                card: card,
+                card,
                 billing_details: {
                     email: user?.email || 'anonymous',
                     name: user?.displayName || 'anonymous'
@@ -76,44 +65,41 @@ const CheckoutForm = ({ contest, total }) => {
         });
 
         if (confirmError) {
-            console.log('confirm error', confirmError);
             setError(confirmError.message);
             setProcessing(false);
-        } else {
-            console.log('payment intent', paymentIntent);
-            if (paymentIntent.status === 'succeeded') {
-                console.log('transaction id', paymentIntent.id);
-                setTransactionId(paymentIntent.id);
+            return;
+        }
 
-                // save the payment in the database
-                const payment = {
-                    userEmail: user.email,
-                    userName: user.displayName,
-                    price: price,
-                    amount: price,
-                    transactionId: paymentIntent.id,
-                    date: new Date(),
-                    contestId: contest._id,
-                    contestName: contest.name,
-                    status: 'pending'
-                };
+        if (paymentIntent.status === 'succeeded') {
+            setTransactionId(paymentIntent.id);
 
-                try {
-                    const res = await axiosSecure.post('/payments', payment);
-                    console.log('payment saved', res.data);
-                    if (res.data?.insertedId || res.data?._id) {
-                        toast.success('🎉 Payment successful! Redirecting to dashboard...');
-                        // Immediate redirect - no delay
-                        navigate('/dashboard/participated');
-                    } else {
-                        setError('Payment succeeded but registration failed. Please contact support.');
-                        setProcessing(false);
-                    }
-                } catch (err) {
-                    console.error('Error saving payment:', err);
-                    setError('Payment succeeded but failed to save. Please contact support with transaction ID: ' + paymentIntent.id);
+            // Save payment in DB
+            const paymentData = {
+                userEmail: user.email,
+                userName: user.displayName,
+                price,
+                amount: price,
+                transactionId: paymentIntent.id,
+                date: new Date(),
+                contestId: contest._id,
+                contestName: contest.name,
+                status: 'pending'
+            };
+
+            try {
+                const res = await axiosSecure.post('/payments', paymentData);
+                if (res.data?.insertedId || res.data?._id) {
+                    toast.success('🎉 Payment successful! Redirecting to dashboard...');
+                    // smooth redirect after 1.5 sec
+                    setTimeout(() => navigate('/dashboard/participated'), 1500);
+                } else {
+                    setError('Payment succeeded but registration failed. Contact support.');
                     setProcessing(false);
                 }
+            } catch (err) {
+                console.error('Error saving payment:', err);
+                setError('Payment succeeded but failed to save. Contact support with transaction ID: ' + paymentIntent.id);
+                setProcessing(false);
             }
         }
     };
@@ -125,9 +111,7 @@ const CheckoutForm = ({ contest, total }) => {
                 color: '#1f2937',
                 fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                 fontSmoothing: 'antialiased',
-                '::placeholder': {
-                    color: '#9ca3af',
-                },
+                '::placeholder': { color: '#9ca3af' },
                 iconColor: '#8b5cf6',
             },
             invalid: {
@@ -148,8 +132,7 @@ const CheckoutForm = ({ contest, total }) => {
                     <CardElement options={CARD_ELEMENT_OPTIONS} />
                 </div>
                 <p className="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
-                    <FaCreditCard className="text-purple-500" />
-                    Your payment information is secure and encrypted
+                    <FaCreditCard className="text-purple-500" /> Your payment information is secure and encrypted
                 </p>
             </div>
 
@@ -173,9 +156,7 @@ const CheckoutForm = ({ contest, total }) => {
                         <p className="text-sm text-green-700 dark:text-green-400">
                             Transaction ID: <span className="font-mono font-semibold">{transactionId}</span>
                         </p>
-                        <p className="text-xs text-green-600 dark:text-green-500 mt-1">
-                            Redirecting to your dashboard...
-                        </p>
+                        <p className="text-xs text-green-600 dark:text-green-500 mt-1">Redirecting to your dashboard...</p>
                     </div>
                 </div>
             )}
@@ -191,23 +172,19 @@ const CheckoutForm = ({ contest, total }) => {
             >
                 {processing ? (
                     <>
-                        <FaSpinner className="animate-spin text-xl" />
-                        Processing Payment...
+                        <FaSpinner className="animate-spin text-xl" /> Processing Payment...
                     </>
                 ) : (
                     <>
-                        <FaCreditCard className="text-xl" />
-                        Pay ${total || price.toFixed(2)}
+                        <FaCreditCard className="text-xl" /> Pay ${total || price.toFixed(2)}
                     </>
                 )}
             </button>
 
-            {/* Test Card Info (for development) */}
+            {/* Test Card Info (Development Only) */}
             {import.meta.env.DEV && (
                 <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
-                    <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2 text-sm">
-                        Test Card (Development Only)
-                    </h4>
+                    <h4 className="font-semibold text-blue-800 dark:text-blue-300 mb-2 text-sm">Test Card (Development Only)</h4>
                     <p className="text-xs text-blue-700 dark:text-blue-400 font-mono">
                         Card: 4242 4242 4242 4242 | Exp: Any future date | CVC: Any 3 digits
                     </p>
