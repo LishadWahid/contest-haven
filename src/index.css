@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+@plugin "daisyui";
+
+:root {
+    --primary: #1E40AF;
+    /* Deep Formal Blue */
+    --secondary: #0F766E;
+    /* Clean Professional Teal */
+    --accent: #F59E0B;
+    /* Subtle Gold Accent */
+    --neutral: #3D4451;
+    --base-100: #FFFFFF;
+}
+
+[data-theme='light'] {
+    --color-primary: #1E40AF;
+    --color-secondary: #0F766E;
+    --color-accent: #F59E0B;
+}
+
+[data-theme='dark'] {
+    --color-primary: #60A5FA;
+    /* Lighter Blue for Dark Mode */
+    --color-secondary: #2DD4BF;
+    /* Lighter Teal for Dark Mode */
+    --color-accent: #FBBF24;
+    --color-base-100: #1F2937;
+    /* Dark Grey Background */
+    --color-text-base: #F3F4F6;
+}
