@@ -53,6 +53,7 @@ const BestCreators = () => {
                             <img
                                 src={creator.image}
                                 alt={creator.name}
+                                loading="lazy"
                                 className="w-full h-full rounded-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                             <div className="absolute bottom-0 right-0 bg-white dark:bg-gray-800 rounded-full p-1 shadow-sm border border-gray-100 dark:border-gray-700">

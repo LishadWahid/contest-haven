@@ -36,33 +36,66 @@ const AllContests = () => {
         <div className='my-10 px-4'>
             <h2 className="text-3xl text-center font-bold mb-8">All Contests</h2>
 
-            <Tabs selectedIndex={tabIndex} onSelect={handleTabSelect}>
-                <TabList>
+            <Tabs selectedIndex={tabIndex} onSelect={handleTabSelect} className="w-full">
+                <TabList className="flex flex-wrap justify-center gap-2 mb-8 border-b-0 p-0">
                     {contestTypes.map((type, idx) => (
-                        <Tab key={idx}>{type}</Tab>
+                        <Tab
+                            key={idx}
+                            selectedClassName="!bg-primary !text-white !border-primary shadow-lg ring-2 ring-primary/20"
+                            className="px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-primary hover:text-primary outline-none select-none bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300"
+                        >
+                            {type}
+                        </Tab>
                     ))}
                 </TabList>
 
                 {contestTypes.map((type, idx) => (
                     <TabPanel key={idx}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                            {contests.map(contest => (
-                                <div key={contest._id} className="card bg-base-100 shadow-xl dark:bg-gray-800 dark:text-gray-100 border dark:border-gray-700">
-                                    <figure><img src={contest.image} alt={contest.name} className="h-48 w-full object-cover" /></figure>
-                                    <div className="card-body">
-                                        <h2 className="card-title flex justify-between">
-                                            <span className="truncate">{contest.name}</span>
-                                            <div className="badge badge-secondary whitespace-nowrap text-xs">{contest.type}</div>
-                                        </h2>
-                                        <p className="text-gray-600 dark:text-gray-300 mb-2">{contest.description.slice(0, 100)}...</p>
-                                        <div className="flex justify-between items-center mt-2">
-                                            <span className="font-semibold text-sm">Participants: {contest.participantsCount}</span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mx-10 gap-6 mt-8">
+                            {contests.map((contest, index) => (
+                                <Link
+                                    to={`/contest/${contest._id}`}
+                                    key={contest._id}
+                                    className="group bg-white dark:bg-gray-800/50 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:border-primary/30 flex flex-col h-full hover:-translate-y-1"
+                                >
+                                    <figure className="h-40 overflow-hidden relative">
+                                        <img
+                                            src={contest.image}
+                                            alt={contest.name}
+                                            loading="lazy"
+                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        />
+                                        <div className="absolute top-2 right-2">
+                                            <span className="badge bg-white/95 text-primary border-none text-[10px] font-bold shadow-sm uppercase tracking-wide">
+                                                {contest.type}
+                                            </span>
                                         </div>
-                                        <div className="card-actions justify-end mt-4">
-                                            <Link to={`/contest/${contest._id}`} className="btn btn-primary btn-sm w-full">Details</Link>
+                                    </figure>
+
+                                    <div className="p-4 flex flex-col flex-1">
+                                        <h3 className="font-bold text-gray-800 dark:text-gray-50 mb-1 line-clamp-1 group-hover:text-primary transition-colors text-sm">
+                                            {contest.name}
+                                        </h3>
+                                        <p className="text-xs text-gray-500 dark:text-gray-200 line-clamp-2 mb-3 leading-relaxed">
+                                            {contest.description}
+                                        </p>
+
+                                        <div className="mt-auto space-y-3">
+                                            <div className="flex justify-between items-center text-xs font-semibold pt-3 border-t border-gray-50 dark:border-gray-700">
+                                                <span className="text-secondary flex items-center gap-1">
+                                                    🏆 ${contest.prize}
+                                                </span>
+                                                <span className="text-gray-400 dark:text-gray-300">
+                                                    👥 {contest.participantsCount}
+                                                </span>
+                                            </div>
+
+                                            <button className="btn btn-primary btn-sm w-full min-h-[2rem] h-9 text-xs font-bold uppercase tracking-wider text-white shadow-md hover:shadow-lg group-hover:bg-primary/90 border-none">
+                                                View Details
+                                            </button>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </TabPanel>

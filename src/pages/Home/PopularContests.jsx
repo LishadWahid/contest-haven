@@ -17,7 +17,7 @@ const PopularContests = () => {
     if (isLoading) {
         return (
             <div className="min-h-[400px] flex justify-center items-center">
-                <span className="loading loading-spinner loading-lg text-purple-600"></span>
+                <span className="loading loading-spinner loading-lg text-primary"></span>
             </div>
         )
     }
@@ -39,7 +39,7 @@ const PopularContests = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-4">
                 <div className="text-center md:text-left">
-                    <h2 className="text-5xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-3">
+                    <h2 className="text-5xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-3">
                         Popular Contests
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400 text-lg">
@@ -48,7 +48,7 @@ const PopularContests = () => {
                 </div>
                 <Link
                     to="/all-contests"
-                    className="btn btn-outline border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white hover:border-purple-600 dark:border-purple-400 dark:text-purple-400 dark:hover:bg-purple-500 dark:hover:border-purple-500 transition-all rounded-full px-8 shadow-lg hover:shadow-xl"
+                    className="btn btn-outline border-2 border-primary text-primary hover:bg-primary hover:text-white hover:border-primary dark:border-primary dark:text-primary dark:hover:bg-primary dark:hover:border-primary transition-all rounded-full px-8 shadow-lg hover:shadow-xl"
                 >
                     View All <FaArrowRight className="ml-2" />
                 </Link>
@@ -61,57 +61,65 @@ const PopularContests = () => {
                         <Link
                             to={`/contest/${contest._id}`}
                             key={contest._id}
-                            className="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ring-1 ring-gray-100 dark:ring-gray-700 flex flex-col h-full w-full"
+                            className="group relative bg-white dark:bg-gray-800/50 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-primary/20 hover:border-primary dark:border-gray-700 flex flex-col h-full w-full"
                             style={{
-                                animationDelay: `${index * 75}ms`
+                                animationDelay: `${index * 100}ms`
                             }}
                         >
-                            {/* Image Section - Larger */}
+                            {/* Image Section */}
                             <figure className="h-56 overflow-hidden relative shrink-0">
                                 <img
                                     src={contest.image}
                                     alt={contest.name}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                    loading="lazy"
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60"></div>
+                                {/* Lighter gradient for better visibility */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
 
-                                {/* Tags - Floating on Image */}
-                                <div className="absolute top-3 right-3">
-                                    <span className="bg-white/95 dark:bg-gray-900/95 text-purple-600 dark:text-purple-400 px-3 py-1 rounded text-xs font-bold shadow-sm backdrop-blur-sm uppercase tracking-wider">
+                                {/* Overlay Content */}
+                                <div className="absolute top-4 right-4 z-10">
+                                    <span className="bg-white/95 text-primary px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-lg shadow-lg">
                                         {contest.type}
                                     </span>
                                 </div>
 
-                                {/* Price Tag on Image */}
-                                <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
-                                    <FaTrophy className="text-yellow-400 text-sm" />
-                                    <span className="text-white text-sm font-bold">${contest.prize}</span>
+                                <div className="absolute bottom-4 left-4 right-4 z-10">
+                                    <h2 className="text-xl font-bold text-white mb-1 line-clamp-1 drop-shadow-md group-hover:text-secondary transition-colors">
+                                        {contest.name}
+                                    </h2>
+                                    <div className="flex items-center gap-2 text-white/90 text-sm font-medium">
+                                        <FaUserFriends className="text-blue-300" />
+                                        <span>{contest.participantsCount} Participants</span>
+                                    </div>
                                 </div>
                             </figure>
 
-                            {/* Content Section - Dense & Informative */}
+                            {/* Content Body */}
                             <div className="p-5 flex flex-col flex-grow">
-                                <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 line-clamp-1 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                                    {contest.name}
-                                </h2>
+                                <div className="flex justify-between items-center mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
+                                    <div className="flex flex-col">
+                                        <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Prize Pool</span>
+                                        <span className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-1">
+                                            <FaTrophy className="text-accent" /> ${contest.prize}
+                                        </span>
+                                    </div>
+                                    <div className="text-right flex flex-col items-end">
+                                        <span className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Deadline</span>
+                                        <span className={`text-sm font-bold ${formatDeadline(contest.deadline) === 'Ended' ? 'text-red-500' : 'text-green-600'}`}>
+                                            {formatDeadline(contest.deadline)}
+                                        </span>
+                                    </div>
+                                </div>
 
-                                <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 mb-4 h-10 leading-relaxed">
+                                <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2 mb-6 leading-relaxed">
                                     {contest.description}
                                 </p>
 
-                                <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700/50 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex items-center gap-1">
-                                            <FaUserFriends className="text-blue-500/80" />
-                                            <span>{contest.participantsCount}</span>
-                                        </div>
-                                        <div className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
-                                        <span>{formatDeadline(contest.deadline)}</span>
-                                    </div>
-
-                                    <div className="flex items-center text-purple-600 dark:text-purple-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-1 group-hover:translate-x-0 duration-300">
-                                        Join <FaArrowRight className="ml-1 text-[10px]" />
-                                    </div>
+                                <div className="mt-auto">
+                                    <button className="w-full btn btn-primary btn-sm rounded-lg text-white font-bold shadow-md hover:shadow-lg group-hover:scale-[1.02] transition-transform">
+                                        View Details <FaArrowRight />
+                                    </button>
                                 </div>
                             </div>
                         </Link>

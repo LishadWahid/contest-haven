@@ -15,7 +15,7 @@ const Footer = () => {
                 </div>
             </nav>
             <aside>
-                <p>Copyright © 2025 - All right reserved by ContestHub</p>
+                <p>Copyright © 2025 - All right reserved ContestHub</p>
             </aside>
         </footer>
     );

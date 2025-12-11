@@ -125,7 +125,7 @@ const WinnerSection = () => {
                             <div className="relative inline-block mb-6">
                                 <div className={`w-32 h-32 rounded-full p-1 mx-auto ${idx < 3 ? 'bg-gradient-to-r from-yellow-400 to-orange-500' : 'bg-gray-200 dark:bg-gray-700'
                                     }`}>
-                                    <img src={winner.image} alt={winner.name} className="w-full h-full rounded-full object-cover border-4 border-white dark:border-gray-800" />
+                                    <img src={winner.image} alt={winner.name} loading="lazy" className="w-full h-full rounded-full object-cover border-4 border-white dark:border-gray-800" />
                                 </div>
 
                                 {/* Crown Icon for Top Winner */}
