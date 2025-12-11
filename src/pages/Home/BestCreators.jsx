@@ -33,7 +33,7 @@ const BestCreators = () => {
     ];
 
     return (
-        <div className="my-24 px-6 max-w-7xl mx-auto font-sans">
+        <div className="my-24 px-6 w-full mx-auto font-sans">
             <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
                     Meet Our Top Creators

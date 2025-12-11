@@ -79,7 +79,7 @@ const WinnerSection = () => {
     };
 
     return (
-        <div className="my-24 px-6 max-w-7xl mx-auto font-sans relative">
+        <div className="my-24 px-6 w-full mx-auto font-sans relative">
             {/* Header - Centered */}
             <div className="text-center mb-12">
                 <span className="text-sm font-bold tracking-widest text-primary uppercase mb-2 block">Hall of Fame</span>

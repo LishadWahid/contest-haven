@@ -2,10 +2,11 @@ import Banner from "./Banner";
 import PopularContests from "./PopularContests";
 import WinnerSection from "./WinnerSection";
 import BestCreators from "./BestCreators";
+import Container from "../../components/Shared/Container";
 
 const Home = () => {
     return (
-        <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+        <div className="mx-20 min-h-screen transition-colors duration-300">
             {/* Banner Section with Search */}
             <Banner />
 

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { useQuery } from '@tanstack/react-query';
-import { FaUserFriends, FaTrophy, FaArrowRight, FaClock, FaDollarSign } from "react-icons/fa";
+import { FaUserFriends, FaTrophy, FaArrowRight, FaClock } from "react-icons/fa";
 
 const PopularContests = () => {
     const axiosPublic = useAxiosPublic();
@@ -35,7 +35,7 @@ const PopularContests = () => {
     };
 
     return (
-        <div className="my-20 px-4 max-w-7xl mx-auto">
+        <div className="my-20 px-4 w-full mx-auto">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 gap-4">
                 <div className="text-center md:text-left">
@@ -55,81 +55,66 @@ const PopularContests = () => {
             </div>
 
             {/* Contest Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {
                     popular.map((contest, index) => (
-                        <div
+                        <Link
+                            to={`/contest/${contest._id}`}
                             key={contest._id}
-                            className="group relative bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 border border-gray-100 dark:border-gray-700"
+                            className="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ring-1 ring-gray-100 dark:ring-gray-700 flex flex-col h-full w-full"
                             style={{
-                                animationDelay: `${index * 100}ms`
+                                animationDelay: `${index * 75}ms`
                             }}
                         >
-                            {/* Contest Type Badge */}
-                            <div className="absolute top-4 right-4 z-20 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm">
-                                {contest.type}
-                            </div>
-
-                            {/* Participants Badge */}
-                            <div className="absolute top-4 left-4 z-20 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
-                                <FaUserFriends className="text-blue-600 dark:text-blue-400" />
-                                <span className="text-gray-800 dark:text-gray-100">{contest.participantsCount}</span>
-                            </div>
-
-                            {/* Image Section */}
-                            <figure className="h-64 overflow-hidden relative">
+                            {/* Image Section - Larger */}
+                            <figure className="h-56 overflow-hidden relative shrink-0">
                                 <img
                                     src={contest.image}
                                     alt={contest.name}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60"></div>
 
-                                {/* Prize Money Overlay */}
-                                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                                    <div className="bg-yellow-500/90 backdrop-blur-sm px-4 py-2 rounded-full flex items-center gap-2 shadow-lg">
-                                        <FaTrophy className="text-white text-lg" />
-                                        <span className="text-white font-bold text-lg">${contest.prize}</span>
-                                    </div>
-                                    <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-3 py-2 rounded-full flex items-center gap-1.5 shadow-lg">
-                                        <FaClock className="text-red-500 text-sm" />
-                                        <span className="text-gray-800 dark:text-gray-100 font-semibold text-xs">
-                                            {formatDeadline(contest.deadline)}
-                                        </span>
-                                    </div>
-                                </div>
-                            </figure>
-
-                            {/* Content Section */}
-                            <div className="p-6">
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 min-h-[3.5rem] group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                                    {contest.name}
-                                </h2>
-
-                                <p className="text-gray-600 dark:text-gray-300 text-sm mb-6 line-clamp-2 min-h-[2.5rem]">
-                                    {contest.description}
-                                </p>
-
-                                {/* Entry Fee */}
-                                <div className="flex items-center gap-2 mb-6 p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl border border-purple-100 dark:border-purple-800">
-                                    <FaDollarSign className="text-green-600 dark:text-green-400" />
-                                    <span className="text-gray-700 dark:text-gray-300 text-sm">
-                                        Entry Fee: <span className="font-bold text-gray-900 dark:text-white">${contest.price}</span>
+                                {/* Tags - Floating on Image */}
+                                <div className="absolute top-3 right-3">
+                                    <span className="bg-white/95 dark:bg-gray-900/95 text-purple-600 dark:text-purple-400 px-3 py-1 rounded text-xs font-bold shadow-sm backdrop-blur-sm uppercase tracking-wider">
+                                        {contest.type}
                                     </span>
                                 </div>
 
-                                {/* Action Button */}
-                                <Link to={`/contest/${contest._id}`} className="block w-full">
-                                    <button className="w-full py-3.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] flex items-center justify-center gap-2">
-                                        View Details
-                                        <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
-                                    </button>
-                                </Link>
-                            </div>
+                                {/* Price Tag on Image */}
+                                <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
+                                    <FaTrophy className="text-yellow-400 text-sm" />
+                                    <span className="text-white text-sm font-bold">${contest.prize}</span>
+                                </div>
+                            </figure>
 
-                            {/* Decorative Element */}
-                            <div className="absolute -bottom-2 -right-2 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
-                        </div>
+                            {/* Content Section - Dense & Informative */}
+                            <div className="p-5 flex flex-col flex-grow">
+                                <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 line-clamp-1 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                                    {contest.name}
+                                </h2>
+
+                                <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 mb-4 h-10 leading-relaxed">
+                                    {contest.description}
+                                </p>
+
+                                <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700/50 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-1">
+                                            <FaUserFriends className="text-blue-500/80" />
+                                            <span>{contest.participantsCount}</span>
+                                        </div>
+                                        <div className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+                                        <span>{formatDeadline(contest.deadline)}</span>
+                                    </div>
+
+                                    <div className="flex items-center text-purple-600 dark:text-purple-400 font-medium opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-1 group-hover:translate-x-0 duration-300">
+                                        Join <FaArrowRight className="ml-1 text-[10px]" />
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
                     ))
                 }
             </div>

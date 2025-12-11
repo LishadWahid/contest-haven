@@ -24,7 +24,7 @@ const Banner = () => {
     }
 
     return (
-        <div className="relative h-[550px] flex items-center justify-center overflow-hidden">
+        <div className="relative mt-10 h-[550px] flex items-center justify-center overflow-hidden">
             {/* Background Slider */}
             {images.map((img, index) => (
                 <div
