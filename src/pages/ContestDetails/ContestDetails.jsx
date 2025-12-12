@@ -1,14 +1,23 @@
-import { useParams, Link } from "react-router-dom";
+
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
-import { FaTrophy, FaDollarSign, FaUserFriends, FaClock, FaTag, FaArrowLeft, FaCheckCircle } from "react-icons/fa";
+import useAuth from "../../hooks/useAuth";
+import { FaTrophy, FaDollarSign, FaUserFriends, FaClock, FaTag, FaArrowLeft, FaCheckCircle, FaCrown } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { useState } from "react";
 
 const ContestDetails = () => {
     const { id } = useParams();
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const axiosPublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { data: contest = {}, isLoading } = useQuery({
+    // Fetch Contest Details
+    const { data: contest = {}, refetch } = useQuery({
         queryKey: ['contest', id],
         queryFn: async () => {
             const res = await axiosPublic.get(`/contests/${id}`);
@@ -16,15 +25,47 @@ const ContestDetails = () => {
         }
     });
 
-    if (isLoading) {
-        return (
-            <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800">
-                <span className="loading loading-spinner loading-lg text-purple-600"></span>
-            </div>
-        );
-    }
+    // Fetch User Payment Status for this contest
+    const { data: isRegistered = false } = useQuery({
+        queryKey: ['isRegistered', id, user?.email],
+        enabled: !!user?.email && !!id,
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/payments/${user?.email}`);
+            // Check if any payment matches this contest ID
+            const found = res.data.find(payment => payment.contestId === id);
+            return !!found;
+        }
+    });
+
+    const handleTaskSubmit = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const taskUrl = form.task.value;
+
+        const submissionData = {
+            contestId: id,
+            contestName: contest.name,
+            userName: user?.displayName,
+            userEmail: user?.email,
+            userPhoto: user?.photoURL, // Capture photo for winner display
+            taskUrl,
+            submittedAt: new Date()
+        }
+
+        const res = await axiosSecure.post('/submissions', submissionData);
+        if (res.data.insertedId) {
+            Swal.fire({
+                title: "Submitted!",
+                text: "Your task has been submitted successfully.",
+                icon: "success"
+            });
+            setIsModalOpen(false);
+            form.reset();
+        }
+    };
 
     const formatDeadline = (deadline) => {
+        if (!deadline) return { text: "Loading...", color: "text-gray-500" };
         const date = new Date(deadline);
         const now = new Date();
         const diffTime = date - now;
@@ -37,11 +78,11 @@ const ContestDetails = () => {
     };
 
     const deadline = formatDeadline(contest.deadline);
+    const isContestEnded = deadline.text === "Contest Ended" || contest.status === 'ended' || contest.winner;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4">
             <div className="max-w-7xl mx-auto">
-                {/* Back Button */}
                 <Link
                     to="/all-contests"
                     className="inline-flex items-center gap-2 mb-8 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors font-semibold group"
@@ -51,220 +92,164 @@ const ContestDetails = () => {
                 </Link>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Left Column - Image & Quick Stats */}
+                    {/* Left Column */}
                     <div className="lg:col-span-1 space-y-6">
-                        {/* Contest Image Card */}
-                        <div className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-700 group">
-                            <div className="relative h-80 overflow-hidden">
-                                <img
-                                    src={contest.image}
-                                    alt={contest.name}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-
-                                {/* Contest Type Badge */}
-                                <div className="absolute top-4 right-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm flex items-center gap-2">
-                                    <FaTag />
-                                    {contest.type}
-                                </div>
+                        {/* Image */}
+                        <div className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-700 group relative h-80">
+                            <img
+                                src={contest.image}
+                                alt={contest.name}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                            <div className="absolute top-4 right-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg backdrop-blur-sm flex items-center gap-2">
+                                <FaTag />
+                                {contest.type}
                             </div>
                         </div>
 
-                        {/* Quick Stats Card */}
-                        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-gray-700">
+                        {/* Stats */}
+                        <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-gray-700 space-y-4">
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                                <FaCheckCircle className="text-purple-600" />
-                                Quick Stats
+                                <FaCheckCircle className="text-purple-600" /> Quick Stats
                             </h3>
-                            <div className="space-y-4">
-                                {/* Prize */}
-                                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center shadow-lg">
-                                            <FaTrophy className="text-white text-xl" />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">Prize Money</p>
-                                            <p className="text-2xl font-bold text-gray-900 dark:text-white">${contest.prize}</p>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                {/* Entry Fee */}
-                                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                            {/* Stats Items */}
+                            {[
+                                { icon: FaTrophy, color: "bg-yellow-500", label: "Prize Money", value: `$${contest.prize}`, borderColor: "border-yellow-200" },
+                                { icon: FaDollarSign, color: "bg-green-500", label: "Entry Fee", value: `$${contest.price}`, borderColor: "border-green-200" },
+                                { icon: FaUserFriends, color: "bg-blue-500", label: "Participants", value: contest.participantsCount, borderColor: "border-blue-200" },
+                                { icon: FaClock, color: "bg-red-500", label: "Deadline", value: deadline.text, sub: new Date(contest.deadline).toLocaleDateString(), borderColor: "border-red-200" }
+                            ].map((stat, idx) => (
+                                <div key={idx} className={`flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/30 rounded-xl border ${stat.borderColor} dark:border-gray-700`}>
                                     <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center shadow-lg">
-                                            <FaDollarSign className="text-white text-xl" />
+                                        <div className={`w-12 h-12 ${stat.color} rounded-full flex items-center justify-center shadow-lg text-white text-xl`}>
+                                            <stat.icon />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">Entry Fee</p>
-                                            <p className="text-2xl font-bold text-gray-900 dark:text-white">${contest.price}</p>
+                                            <p className="text-xs text-gray-600 dark:text-gray-400">{stat.label}</p>
+                                            <p className={`text-lg font-bold text-gray-900 dark:text-white`}>{stat.value}</p>
+                                            {stat.sub && <p className="text-xs text-gray-500">{stat.sub}</p>}
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Participants */}
-                                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center shadow-lg">
-                                            <FaUserFriends className="text-white text-xl" />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">Participants</p>
-                                            <p className="text-2xl font-bold text-gray-900 dark:text-white">{contest.participantsCount}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Deadline */}
-                                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20 rounded-xl border border-red-200 dark:border-red-800">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
-                                            <FaClock className="text-white text-xl" />
-                                        </div>
-                                        <div>
-                                            <p className="text-xs text-gray-600 dark:text-gray-400">Deadline</p>
-                                            <p className={`text-lg font-bold ${deadline.color}`}>{deadline.text}</p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                {new Date(contest.deadline).toLocaleDateString('en-US', {
-                                                    month: 'long',
-                                                    day: 'numeric',
-                                                    year: 'numeric'
-                                                })}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Right Column - Details */}
+                    {/* Right Column */}
                     <div className="lg:col-span-2 space-y-6">
-                        {/* Contest Title Card */}
+                        {/* Title & Status */}
                         <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-100 dark:border-gray-700">
-                            <h1 className="text-5xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4 leading-tight">
+                            <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4 leading-tight">
                                 {contest.name}
                             </h1>
-                            <div className="flex flex-wrap gap-3 items-center">
-                                <span className="px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-semibold border border-purple-200 dark:border-purple-700">
-                                    {contest.type}
-                                </span>
-                                <span className={`px-4 py-2 rounded-full text-sm font-semibold ${deadline.text === "Contest Ended"
-                                        ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-700"
-                                        : "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700"
-                                    }`}>
-                                    {deadline.text === "Contest Ended" ? "🔴 Closed" : "🟢 Active"}
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Description Card */}
-                        <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-100 dark:border-gray-700">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                                📋 Contest Description
-                            </h2>
-                            <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
+                            <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-6">
                                 {contest.description}
                             </p>
                         </div>
 
-                        {/* Contest Information Table */}
-                        <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl border border-gray-100 dark:border-gray-700">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-                                📊 Contest Information
-                            </h2>
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                                        <tr className="hover:bg-purple-50 dark:hover:bg-purple-900/10 transition-colors">
-                                            <td className="py-4 px-6 font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-3">
-                                                <FaTrophy className="text-yellow-500 text-xl" />
-                                                Prize Money
-                                            </td>
-                                            <td className="py-4 px-6 text-right">
-                                                <span className="text-2xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
-                                                    ${contest.prize}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr className="hover:bg-purple-50 dark:hover:bg-purple-900/10 transition-colors">
-                                            <td className="py-4 px-6 font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-3">
-                                                <FaDollarSign className="text-green-500 text-xl" />
-                                                Entry Fee
-                                            </td>
-                                            <td className="py-4 px-6 text-right">
-                                                <span className="text-xl font-bold text-gray-900 dark:text-white">
-                                                    ${contest.price}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr className="hover:bg-purple-50 dark:hover:bg-purple-900/10 transition-colors">
-                                            <td className="py-4 px-6 font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-3">
-                                                <FaUserFriends className="text-blue-500 text-xl" />
-                                                Total Participants
-                                            </td>
-                                            <td className="py-4 px-6 text-right">
-                                                <span className="text-xl font-bold text-gray-900 dark:text-white">
-                                                    {contest.participantsCount} Contestants
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr className="hover:bg-purple-50 dark:hover:bg-purple-900/10 transition-colors">
-                                            <td className="py-4 px-6 font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-3">
-                                                <FaTag className="text-purple-500 text-xl" />
-                                                Contest Type
-                                            </td>
-                                            <td className="py-4 px-6 text-right">
-                                                <span className="px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-bold">
-                                                    {contest.type}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr className="hover:bg-purple-50 dark:hover:bg-purple-900/10 transition-colors">
-                                            <td className="py-4 px-6 font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-3">
-                                                <FaClock className="text-red-500 text-xl" />
-                                                Registration Deadline
-                                            </td>
-                                            <td className="py-4 px-6 text-right">
-                                                <div className="text-right">
-                                                    <p className={`text-xl font-bold ${deadline.color}`}>
-                                                        {deadline.text}
-                                                    </p>
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                                        {new Date(contest.deadline).toLocaleDateString('en-US', {
-                                                            weekday: 'long',
-                                                            month: 'long',
-                                                            day: 'numeric',
-                                                            year: 'numeric'
-                                                        })}
-                                                    </p>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        {/* CTA Button */}
-                        <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-8 shadow-2xl text-white">
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                                <div>
-                                    <h3 className="text-3xl font-bold mb-2">Ready to Compete?</h3>
-                                    <p className="text-purple-100">Join {contest.participantsCount} other contestants and win ${contest.prize}!</p>
+                        {/* Winner Section */}
+                        {contest.winner && (
+                            <div className="bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 rounded-3xl p-8 shadow-xl border border-yellow-200 dark:border-yellow-700 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-4 opacity-10">
+                                    <FaCrown className="text-9xl text-yellow-600" />
                                 </div>
-                                <Link
-                                    to={`/payment/${id}`}
-                                    className="btn bg-white text-purple-600 hover:bg-gray-100 border-none px-8 py-4 text-lg font-bold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 whitespace-nowrap"
-                                >
-                                    Register Now - ${contest.price}
-                                </Link>
+                                <div className="relative z-10 flex items-center gap-6">
+                                    <img
+                                        src={contest.winner.photo}
+                                        alt={contest.winner.name}
+                                        className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
+                                    />
+                                    <div>
+                                        <h3 className="text-xl font-bold text-yellow-800 dark:text-yellow-200 uppercase tracking-widest mb-1">Winner Declared</h3>
+                                        <p className="text-3xl font-extrabold text-gray-900 dark:text-white">{contest.winner.name}</p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">Congratulations on winning the prize!</p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        )}
+
+                        {/* Action Area */}
+                        {!contest.winner && (
+                            <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-8 shadow-2xl text-white">
+                                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div>
+                                        <h3 className="text-3xl font-bold mb-2">
+                                            {isContestEnded ? "Contest Has Ended" : "Ready to Compete?"}
+                                        </h3>
+                                        <p className="text-purple-100">
+                                            {isContestEnded
+                                                ? "Submissions are closed. Waiting for winner declaration."
+                                                : `Join ${contest.participantsCount} other contestants and win $${contest.prize}!`
+                                            }
+                                        </p>
+                                    </div>
+
+                                    {/* Logic Buttons */}
+                                    {!isContestEnded && (
+                                        <>
+                                            {!user ? (
+                                                <button onClick={() => navigate('/login')} className="btn bg-white text-purple-600 hover:bg-gray-100 border-none px-8 py-4 text-lg font-bold rounded-xl shadow-xl">
+                                                    Login to Register
+                                                </button>
+                                            ) : isRegistered ? (
+                                                <button
+                                                    onClick={() => setIsModalOpen(true)}
+                                                    className="btn bg-green-500 text-white hover:bg-green-600 border-none px-8 py-4 text-lg font-bold rounded-xl shadow-xl"
+                                                >
+                                                    Submit Task
+                                                </button>
+                                            ) : (
+                                                <Link
+                                                    to={`/payment/${id}`}
+                                                    className="btn bg-white text-purple-600 hover:bg-gray-100 border-none px-8 py-4 text-lg font-bold rounded-xl shadow-xl hover:shadow-2xl"
+                                                >
+                                                    Register - ${contest.price}
+                                                </Link>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
+
+                {/* Submit Task Modal */}
+                {isModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                        <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 w-full max-w-lg shadow-2xl animate-in fade-in zoom-in duration-200">
+                            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Submit Your Work</h2>
+                            <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">
+                                Please provide the Google Drive link or direct URL to your submission. Ensure access is open.
+                            </p>
+                            <form onSubmit={handleTaskSubmit}>
+                                <textarea
+                                    name="task"
+                                    required
+                                    placeholder="Paste your submission link here..."
+                                    className="w-full h-32 p-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-purple-500 outline-none resize-none mb-6"
+                                ></textarea>
+                                <div className="flex justify-end gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsModalOpen(false)}
+                                        className="btn btn-ghost text-gray-500"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="btn bg-purple-600 text-white hover:bg-purple-700 border-none"
+                                    >
+                                        Submit Entry
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
