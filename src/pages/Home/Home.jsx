@@ -1,12 +1,13 @@
 import Banner from "./Banner";
 import PopularContests from "./PopularContests";
 import WinnerSection from "./WinnerSection";
+import Reviews from "./Reviews";
 import BestCreators from "./BestCreators";
-import Container from "../../components/Shared/Container";
+
 
 const Home = () => {
     return (
-        <div className="mx-20 min-h-screen transition-colors duration-300">
+        <div className="mx-auto px-4 md:px-8 lg:px-12 min-h-screen transition-colors duration-300">
             {/* Banner Section with Search */}
             <Banner />
 
@@ -17,6 +18,9 @@ const Home = () => {
 
                 {/* Motivation/Winner Section */}
                 <WinnerSection />
+
+                {/* Reviews Section */}
+                <Reviews />
 
                 {/* Extra Static Section: Best Creators */}
                 <BestCreators />

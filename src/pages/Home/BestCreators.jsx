@@ -1,81 +1,138 @@
-import { FaStar } from "react-icons/fa";
+import React from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Autoplay, Pagination } from 'swiper/modules';
 
 const BestCreators = () => {
     const creators = [
         {
             id: 1,
             name: "Alex Morgan",
-            role: "Brand Designer",
             image: "https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg",
-            rating: "4.9",
+            role: "Designer",
         },
         {
             id: 2,
             name: "Sarah Jenkins",
-            role: "Copywriter",
             image: "https://img.freepik.com/free-photo/young-beautiful-woman-pink-warm-sweater_273609-17368.jpg",
-            rating: "5.0",
+            role: "Copywriter",
         },
         {
             id: 3,
             name: "Michael Chen",
-            role: "Developer",
             image: "https://img.freepik.com/free-photo/handsome-young-man-with-arms-crossed_23-2148222620.jpg",
-            rating: "4.8",
+            role: "Developer",
         },
         {
             id: 4,
             name: "Emily Davis",
-            role: "Photographer",
             image: "https://img.freepik.com/free-photo/portrait-young-happy-woman-smiling-camera_23-2147892187.jpg",
-            rating: "4.9",
+            role: "Photographer",
+        },
+        {
+            id: 5,
+            name: "Chris Wilson",
+            image: "https://img.freepik.com/free-photo/mand-holding-cup_1258-340.jpg",
+            role: "Artist",
+        },
+        {
+            id: 6,
+            name: "David Kim",
+            image: "https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg",
+            role: "Motion Designer",
+        },
+        {
+            id: 7,
+            name: "Lisa Wang",
+            image: "https://img.freepik.com/free-photo/pretty-smiling-joyfully-female-with-fair-hair-dressed-casually-looking-with-satisfaction_176420-15187.jpg",
+            role: "Illustrator",
+        },
+        {
+            id: 8,
+            name: "James Carter",
+            image: "https://img.freepik.com/free-photo/bohemian-man-with-his-arms-crossed_1368-3542.jpg",
+            role: "Videographer",
+        },
+        {
+            id: 9,
+            name: "Nina Patel",
+            image: "https://img.freepik.com/free-photo/portrait-beautiful-woman-smiling_23-2148222610.jpg",
+            role: "UI/UX Designer",
         }
     ];
 
     return (
-        <div className="my-24 px-6 w-full mx-auto font-sans">
-            <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
-                    Meet Our Top Creators
+        <div className="my-16 w-full max-w-7xl mx-auto px-4 font-sans">
+            {/* Header Section */}
+            <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent uppercase tracking-wider mb-2 drop-shadow-sm">
+                    Our Top Creators
                 </h2>
-                <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                    The talented individuals driving innovation and creativity in our community.
-                </p>
+                <div className="flex justify-center items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-pink-500 animate-pulse"></span>
+                    <span className="w-16 h-1 bg-gradient-to-r from-pink-500 to-indigo-500 rounded-full"></span>
+                    <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {creators.map((creator) => (
-                    <div
-                        key={creator.id}
-                        className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center border border-gray-100 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all duration-300 hover:shadow-lg group"
-                    >
-                        <div className="relative w-24 h-24 mx-auto mb-6">
-                            <img
-                                src={creator.image}
-                                alt={creator.name}
-                                loading="lazy"
-                                className="w-full h-full rounded-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                            <div className="absolute bottom-0 right-0 bg-white dark:bg-gray-800 rounded-full p-1 shadow-sm border border-gray-100 dark:border-gray-700">
-                                <div className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 text-xs font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1">
-                                    <FaStar size={10} /> {creator.rating}
+            {/* Creators Carousel */}
+            <Swiper
+                slidesPerView={2}
+                spaceBetween={20}
+                autoplay={{
+                    delay: 2500,
+                    disableOnInteraction: false,
+                }}
+                loop={true}
+                pagination={{
+                    clickable: true,
+                    dynamicBullets: true,
+                }}
+                breakpoints={{
+                    640: {
+                        slidesPerView: 3,
+                        spaceBetween: 20,
+                    },
+                    768: {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                    },
+                    1024: {
+                        slidesPerView: 5,
+                        spaceBetween: 40,
+                    },
+                }}
+                modules={[Autoplay, Pagination]}
+                className="mySwiper py-10 px-4"
+            >
+                {creators.map((creator, index) => (
+                    <SwiperSlide key={creator.id}>
+                        <div className="group flex flex-col items-center cursor-pointer transition-transform hover:-translate-y-2 pb-10">
+                            {/* Image Container with Gradient Border */}
+                            <div className="relative mb-4">
+                                <div className={`absolute -inset-1 bg-gradient-to-r ${index % 2 === 0 ? 'from-pink-600 to-purple-600' : 'from-blue-600 to-teal-600'} rounded-full blur opacity-50 group-hover:opacity-100 transition duration-500`}></div>
+                                <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-xl">
+                                    <img
+                                        src={creator.image}
+                                        alt={creator.name}
+                                        loading="lazy"
+                                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                    />
                                 </div>
                             </div>
+
+                            {/* Text */}
+                            <h3 className={`text-lg font-bold bg-gradient-to-r ${index % 2 === 0 ? 'from-pink-600 to-purple-600' : 'from-blue-600 to-teal-600'} bg-clip-text text-transparent transition-colors tracking-wide text-center`}>
+                                {creator.name}
+                            </h3>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-1 text-center">
+                                {creator.role}
+                            </p>
                         </div>
-
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
-                            {creator.name}
-                        </h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide mb-6">
-                            {creator.role}
-                        </p>
-
-                        <button className="w-full py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-semibold hover:bg-gray-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors">
-                            View Profile
-                        </button>
-                    </div>
+                    </SwiperSlide>
                 ))}
-            </div>
+            </Swiper>
         </div>
     );
 };

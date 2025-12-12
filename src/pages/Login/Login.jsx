@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -167,6 +168,7 @@ const Login = () => {
                     </div>
                 </motion.div>
             </div>
+            <Footer />
         </>
     );
 };
