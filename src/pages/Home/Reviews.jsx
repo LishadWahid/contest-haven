@@ -57,7 +57,7 @@ const Reviews = () => {
     ];
 
     return (
-        <div className='my-24 max-w-7xl mx-auto px-4'>
+        <div className='my-24 w-full mx-auto px-4'>
             <div className='text-center mb-16'>
                 <h2 className="text-5xl font-extrabold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
                     What Our Users Say

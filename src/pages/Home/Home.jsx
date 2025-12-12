@@ -3,11 +3,13 @@ import PopularContests from "./PopularContests";
 import WinnerSection from "./WinnerSection";
 import Reviews from "./Reviews";
 import BestCreators from "./BestCreators";
+import Project from "./Project";
+import FeatureGrid from "./FeatureGrid";
 
 
 const Home = () => {
     return (
-        <div className="mx-auto px-4 md:px-8 lg:px-12 min-h-screen transition-colors duration-300">
+        <div className="w-full min-h-screen transition-colors duration-300">
             {/* Banner Section with Search */}
             <Banner />
 
@@ -16,8 +18,14 @@ const Home = () => {
                 {/* Popular Contests Section */}
                 <PopularContests />
 
+                {/* Why Choose Us Section */}
+                <Project />
+
                 {/* Motivation/Winner Section */}
                 <WinnerSection />
+
+                {/* Feature Grid Section */}
+                <FeatureGrid />
 
                 {/* Reviews Section */}
                 <Reviews />
