@@ -9,7 +9,7 @@ const ReviewCard = ({ review }) => {
             <FaQuoteLeft className="text-primary text-4xl mb-4 opacity-50" />
 
             {/* Review Text */}
-            <p className="mb-6 text-gray-600 dark:text-gray-300 flex-grow italic leading-relaxed">
+            <p className="mb-6 text-gray-600 dark:text-gray-400 flex-grow italic leading-relaxed">
                 "{testimonial}"
             </p>
 
@@ -18,7 +18,7 @@ const ReviewCard = ({ review }) => {
 
             {/* Profile */}
             <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full ring-2 ring-primary ring-offset-2 dark:ring-offset-gray-900 overflow-hidden">
+                <div className="w-12 h-12 rounded-full ring-2 ring-primary ring-offset-2 dark:ring-offset-gray-800 overflow-hidden">
                     <img
                         src={user_photoURL}
                         alt={userName}
@@ -26,7 +26,7 @@ const ReviewCard = ({ review }) => {
                     />
                 </div>
                 <div>
-                    <h3 className="font-bold text-lg text-gray-800 dark:text-white">{userName}</h3>
+                    <h3 className="font-bold text-lg text-gray-900 dark:text-white">{userName}</h3>
                     <p className="text-xs text-secondary font-semibold uppercase tracking-wide">{designation || "Participant"}</p>
                 </div>
             </div>
