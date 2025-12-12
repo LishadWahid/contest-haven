@@ -6,6 +6,8 @@ import useAuth from "../../hooks/useAuth";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import toast from "react-hot-toast";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const SignUp = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -136,182 +138,186 @@ const SignUp = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-base-200 dark:bg-gray-900 py-12 px-4">
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="card w-full max-w-lg shadow-2xl bg-base-100 dark:bg-gray-800"
-            >
-                <div className="card-body">
-                    {/* Header */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="text-center mb-4"
-                    >
-                        <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-1">Sign Up</h1>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">Create your account</p>
-                    </motion.div>
-
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-                        {/* Name Input */}
+        <>
+            <Navbar />
+            <div className="min-h-screen flex items-center justify-center bg-base-200 dark:bg-gray-900 py-12 px-4">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="card w-full max-w-lg shadow-2xl bg-base-100 dark:bg-gray-800"
+                >
+                    <div className="card-body">
+                        {/* Header */}
                         <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="form-control"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-center mb-4"
                         >
-                            <div className="flex items-center gap-3">
-                                <label className="label w-24 justify-start py-0">
-                                    <span className="label-text dark:text-gray-300 text-sm font-medium">Name:</span>
-                                </label>
-                                <div className="flex-1">
-                                    <input
-                                        type="text"
-                                        {...register("name", { required: true })}
-                                        placeholder="Enter your name"
-                                        className="input input-sm input-bordered w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                                    />
-                                    {errors.name && <span className="text-red-500 text-xs mt-1 block">Name is required</span>}
-                                </div>
-                            </div>
+                            <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-1">Sign Up</h1>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Create your account</p>
                         </motion.div>
 
-                        {/* Photo Upload */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.4 }}
-                            className="form-control"
-                        >
-                            <div className="flex items-center gap-3">
-                                <label className="label w-24 justify-start py-0">
-                                    <span className="label-text dark:text-gray-300 text-sm font-medium">Photo:</span>
-                                </label>
-                                <div className="flex-1">
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="file"
-                                            {...register("photo", { required: true })}
-                                            onChange={handleImageChange}
-                                            accept="image/*"
-                                            className="hidden"
-                                            id="photo-upload"
-                                        />
-                                        <label
-                                            htmlFor="photo-upload"
-                                            className="btn btn-sm btn-outline dark:text-gray-300 dark:border-gray-600 hover:bg-primary hover:text-white cursor-pointer flex-shrink-0"
-                                        >
-                                            <FaCloudUploadAlt />
-                                            Choose
-                                        </label>
-                                        <div className="flex-1 flex items-center px-3 py-1 bg-base-200 dark:bg-gray-700 rounded-lg border border-base-300 dark:border-gray-600">
-                                            <span className="text-xs text-gray-600 dark:text-gray-400 truncate">
-                                                {selectedFileName || 'No file chosen'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    {errors.photo && <span className="text-red-500 text-xs mt-1 block">Photo is required</span>}
-                                    {imagePreview && (
-                                        <div className="mt-2">
-                                            <img src={imagePreview} alt="Preview" className="w-20 h-20 rounded-full object-cover border-2 border-primary" />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* Email Input */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.5 }}
-                            className="form-control"
-                        >
-                            <div className="flex items-center gap-3">
-                                <label className="label w-24 justify-start py-0">
-                                    <span className="label-text dark:text-gray-300 text-sm font-medium">Email:</span>
-                                </label>
-                                <div className="flex-1">
-                                    <input
-                                        type="email"
-                                        {...register("email", { required: true })}
-                                        placeholder="Enter your email"
-                                        className="input input-sm input-bordered w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                                    />
-                                    {errors.email && <span className="text-red-500 text-xs mt-1 block">Email is required</span>}
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* Password Input */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 0.6 }}
-                            className="form-control"
-                        >
-                            <div className="flex items-center gap-3">
-                                <label className="label w-24 justify-start py-0">
-                                    <span className="label-text dark:text-gray-300 text-sm font-medium">Password:</span>
-                                </label>
-                                <div className="flex-1">
-                                    <input
-                                        type="password"
-                                        {...register("password", {
-                                            required: "Password is required",
-                                            minLength: { value: 6, message: "Min 6 characters" },
-                                            maxLength: { value: 20, message: "Max 20 characters" }
-                                        })}
-                                        placeholder="Enter your password"
-                                        className="input input-sm input-bordered w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                                    />
-                                    {errors.password && <span className="text-red-500 text-xs mt-1 block">{errors.password.message}</span>}
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* Submit Button */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.7 }}
-                            className="form-control mt-4"
-                        >
-                            <button
-                                type="submit"
-                                className="btn btn-sm btn-primary text-white w-full"
-                                disabled={uploading}
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+                            {/* Name Input */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="form-control"
                             >
-                                {uploading ? (
-                                    <>
-                                        <span className="loading loading-spinner loading-xs"></span>
-                                        Creating...
-                                    </>
-                                ) : (
-                                    'Sign Up'
-                                )}
-                            </button>
-                        </motion.div>
-                    </form>
+                                <div className="flex items-center gap-3">
+                                    <label className="label w-24 justify-start py-0">
+                                        <span className="label-text dark:text-gray-300 text-sm font-medium">Name:</span>
+                                    </label>
+                                    <div className="flex-1">
+                                        <input
+                                            type="text"
+                                            {...register("name", { required: true })}
+                                            placeholder="Enter your name"
+                                            className="input input-sm input-bordered w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                                        />
+                                        {errors.name && <span className="text-red-500 text-xs mt-1 block">Name is required</span>}
+                                    </div>
+                                </div>
+                            </motion.div>
 
-                    {/* Login Link */}
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.8 }}
-                        className="text-center mt-3 text-sm text-gray-600 dark:text-gray-400"
-                    >
-                        Already have an account?{' '}
-                        <Link to="/login" className="text-primary font-semibold hover:underline">
-                            Login
-                        </Link>
-                    </motion.p>
-                </div>
-            </motion.div>
-        </div>
+                            {/* Photo Upload */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.4 }}
+                                className="form-control"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <label className="label w-24 justify-start py-0">
+                                        <span className="label-text dark:text-gray-300 text-sm font-medium">Photo:</span>
+                                    </label>
+                                    <div className="flex-1">
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="file"
+                                                {...register("photo", { required: true })}
+                                                onChange={handleImageChange}
+                                                accept="image/*"
+                                                className="hidden"
+                                                id="photo-upload"
+                                            />
+                                            <label
+                                                htmlFor="photo-upload"
+                                                className="btn btn-sm btn-outline dark:text-gray-300 dark:border-gray-600 hover:bg-primary hover:text-white cursor-pointer flex-shrink-0"
+                                            >
+                                                <FaCloudUploadAlt />
+                                                Choose
+                                            </label>
+                                            <div className="flex-1 flex items-center px-3 py-1 bg-base-200 dark:bg-gray-700 rounded-lg border border-base-300 dark:border-gray-600">
+                                                <span className="text-xs text-gray-600 dark:text-gray-400 truncate">
+                                                    {selectedFileName || 'No file chosen'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {errors.photo && <span className="text-red-500 text-xs mt-1 block">Photo is required</span>}
+                                        {imagePreview && (
+                                            <div className="mt-2">
+                                                <img src={imagePreview} alt="Preview" className="w-20 h-20 rounded-full object-cover border-2 border-primary" />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            {/* Email Input */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.5 }}
+                                className="form-control"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <label className="label w-24 justify-start py-0">
+                                        <span className="label-text dark:text-gray-300 text-sm font-medium">Email:</span>
+                                    </label>
+                                    <div className="flex-1">
+                                        <input
+                                            type="email"
+                                            {...register("email", { required: true })}
+                                            placeholder="Enter your email"
+                                            className="input input-sm input-bordered w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                                        />
+                                        {errors.email && <span className="text-red-500 text-xs mt-1 block">Email is required</span>}
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            {/* Password Input */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.6 }}
+                                className="form-control"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <label className="label w-24 justify-start py-0">
+                                        <span className="label-text dark:text-gray-300 text-sm font-medium">Password:</span>
+                                    </label>
+                                    <div className="flex-1">
+                                        <input
+                                            type="password"
+                                            {...register("password", {
+                                                required: "Password is required",
+                                                minLength: { value: 6, message: "Min 6 characters" },
+                                                maxLength: { value: 20, message: "Max 20 characters" }
+                                            })}
+                                            placeholder="Enter your password"
+                                            className="input input-sm input-bordered w-full dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                                        />
+                                        {errors.password && <span className="text-red-500 text-xs mt-1 block">{errors.password.message}</span>}
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            {/* Submit Button */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.7 }}
+                                className="form-control mt-4"
+                            >
+                                <button
+                                    type="submit"
+                                    className="btn btn-sm btn-primary text-white w-full"
+                                    disabled={uploading}
+                                >
+                                    {uploading ? (
+                                        <>
+                                            <span className="loading loading-spinner loading-xs"></span>
+                                            Creating...
+                                        </>
+                                    ) : (
+                                        'Sign Up'
+                                    )}
+                                </button>
+                            </motion.div>
+                        </form>
+
+                        {/* Login Link */}
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.8 }}
+                            className="text-center mt-3 text-sm text-gray-600 dark:text-gray-400"
+                        >
+                            Already have an account?{' '}
+                            <Link to="/login" className="text-primary font-semibold hover:underline">
+                                Login
+                            </Link>
+                        </motion.p>
+                    </div>
+                </motion.div>
+            </div>
+            <Footer />
+        </>
     );
 };
 
