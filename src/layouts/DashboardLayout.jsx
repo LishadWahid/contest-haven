@@ -1,6 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import useAdmin from "../hooks/useAdmin";
-import useCreator from "../hooks/useCreator";
+import useUserRole from "../hooks/useUserRole";
 import {
     FaAd,
     FaBook,
@@ -13,14 +12,26 @@ import {
 } from "react-icons/fa";
 
 const DashboardLayout = () => {
-    const [isAdmin] = useAdmin();
-    const [isCreator] = useCreator();
+    const { role, isRoleLoading, isAdmin, isCreator, isUser } = useUserRole();
+
+    // Show loading while checking roles
+    if (isRoleLoading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+                    <p className="mt-4 text-gray-600 dark:text-gray-400">Loading Dashboard...</p>
+                </div>
+            </div>
+        );
+    }
 
     // Reusable NavItem component for cleaner code
-    const NavItem = ({ to, icon: Icon, children }) => (
+    const NavItem = ({ to, icon: Icon, children, ...props }) => (
         <li>
             <NavLink
                 to={to}
+                {...props}
                 className={({ isActive }) =>
                     `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium group relative overflow-hidden ${isActive
                         ? "bg-white/20 text-white shadow-lg backdrop-blur-sm"
@@ -42,20 +53,25 @@ const DashboardLayout = () => {
             <aside className="w-72 bg-gradient-to-br from-violet-900 via-indigo-900 to-blue-900 text-white flex flex-col shadow-2xl sticky top-0 h-screen overflow-y-auto z-50">
                 {/* Sidebar Header */}
                 <div className="p-8 border-b border-white/10">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg transform rotate-3 hover:rotate-6 transition-transform">
+                    <NavLink to="/dashboard" className="flex items-center gap-3 group">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg transform group-hover:rotate-12 transition-transform duration-300">
                             <span className="text-xl font-bold text-white">CH</span>
                         </div>
                         <div>
-                            <h1 className="text-lg font-bold tracking-wide">ContestHub</h1>
+                            <h1 className="text-lg font-bold tracking-wide text-white group-hover:text-blue-200 transition-colors">ContestHub</h1>
                             <p className="text-xs text-blue-200 uppercase tracking-wider">Dashboard</p>
                         </div>
+                    </NavLink>
+                    {/* Debug: Show current role */}
+                    <div className="mt-3 px-3 py-1.5 bg-white/10 rounded-lg">
+                        <p className="text-xs text-white/60">Role: <span className="text-white font-semibold">{role || 'loading...'}</span></p>
                     </div>
                 </div>
 
                 {/* Navigation Menu */}
                 <div className="flex-1 px-4 py-6">
                     <ul className="space-y-2">
+                        <NavItem to="/dashboard" icon={FaChartPie} end={true}>Overview</NavItem>
                         {
                             isAdmin ? (
                                 <>

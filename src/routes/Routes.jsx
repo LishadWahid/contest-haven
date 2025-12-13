@@ -21,6 +21,10 @@ import SubmissionsPage from "../pages/Dashboard/Creator/SubmissionsPage";
 import EditContest from "../pages/Dashboard/Creator/EditContest";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import ManageContests from "../pages/Dashboard/Admin/ManageContests";
+import AdminDashboard from "../pages/Dashboard/Admin/AdminDashboard";
+import CreatorDashboard from "../pages/Dashboard/Creator/CreatorDashboard";
+import UserDashboard from "../pages/Dashboard/User/UserDashboard";
+import DashboardHome from "../pages/Dashboard/DashboardHome";
 
 
 export const router = createBrowserRouter([
@@ -64,18 +68,25 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
+      // Index route for Dashboard (redirects to role-specific home)
+      { index: true, element: <DashboardHome /> },
+
       // USER ROUTES
       { path: "participated", element: <ParticipatedContests /> },
       { path: "winnings", element: <WinningContests /> },
       { path: "profile", element: <UserProfile /> },
+      // Optional explicit path for user dashboard
+      { path: "user", element: <UserDashboard /> },
 
       // CREATOR ROUTES
+      { path: "creator", element: <CreatorDashboard /> }, // Optional explicit path
       { path: "add-contest", element: <AddContest /> },
       { path: "my-contests", element: <MyCreatedContests /> },
       { path: "submissions/:id", element: <SubmissionsPage /> },
       { path: "edit-contest/:id", element: <EditContest /> },
 
       // ADMIN ROUTES
+      { path: "admin", element: <AdminDashboard /> }, // Optional explicit path
       { path: "manage-users", element: <ManageUsers /> },
       { path: "manage-contests", element: <ManageContests /> },
     ],
