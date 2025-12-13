@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 const AddContest = () => {
     const { register, handleSubmit, reset } = useForm();
@@ -44,55 +45,169 @@ const AddContest = () => {
         }
     }
 
+    // Animation Variants
+    const containerVariants = {
+        hidden: { opacity: 0, y: 50 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.6,
+                ease: "easeOut",
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+    };
+
     return (
-        <div>
-            <h2 className="text-3xl font-bold mb-6">Add Contest</h2>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Form fields... */}
-                    <div className="form-control">
-                        <label className="label">Contest Name</label>
-                        <input type="text" {...register("name", { required: true })} className="input input-bordered" />
+        <motion.div
+            className="w-full max-w-4xl mx-auto p-4 md:p-8"
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+        >
+            <motion.h2
+                className="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white"
+                variants={itemVariants}
+            >
+                Add New Contest
+            </motion.h2>
+
+            <motion.div
+                className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8"
+                variants={itemVariants}
+            >
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Contest Name */}
+                        <motion.div className="form-control" variants={itemVariants}>
+                            <label className="label font-medium text-gray-700 dark:text-gray-300">
+                                Contest Name
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="e.g., Logo Design Challenge"
+                                {...register("name", { required: true })}
+                                className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            />
+                        </motion.div>
+
+                        {/* Image URL */}
+                        <motion.div className="form-control" variants={itemVariants}>
+                            <label className="label font-medium text-gray-700 dark:text-gray-300">
+                                Image URL
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="https://example.com/image.jpg"
+                                {...register("image", { required: true })}
+                                className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            />
+                        </motion.div>
+
+                        {/* Contest Price */}
+                        <motion.div className="form-control" variants={itemVariants}>
+                            <label className="label font-medium text-gray-700 dark:text-gray-300">
+                                Entry Price ($)
+                            </label>
+                            <input
+                                type="number"
+                                placeholder="0.00"
+                                step="0.01"
+                                {...register("price", { required: true })}
+                                className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            />
+                        </motion.div>
+
+                        {/* Prize Money */}
+                        <motion.div className="form-control" variants={itemVariants}>
+                            <label className="label font-medium text-gray-700 dark:text-gray-300">
+                                Prize Money
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="e.g., $500 + Certificate"
+                                {...register("prize", { required: true })}
+                                className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            />
+                        </motion.div>
+
+                        {/* Contest Type */}
+                        <motion.div className="form-control" variants={itemVariants}>
+                            <label className="label font-medium text-gray-700 dark:text-gray-300">
+                                Contest Type
+                            </label>
+                            <select
+                                defaultValue="default"
+                                {...register("type", { required: true })}
+                                className="select select-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            >
+                                <option disabled value="default">Select a type</option>
+                                <option value="Image Design">Image Design</option>
+                                <option value="Article Writing">Article Writing</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Business Idea">Business Idea</option>
+                            </select>
+                        </motion.div>
+
+                        {/* Deadline */}
+                        <motion.div className="form-control" variants={itemVariants}>
+                            <label className="label font-medium text-gray-700 dark:text-gray-300">
+                                Deadline
+                            </label>
+                            <div className="w-full">
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                    wrapperClassName="w-full"
+                                />
+                            </div>
+                        </motion.div>
+
+                        {/* Description */}
+                        <motion.div className="form-control md:col-span-2" variants={itemVariants}>
+                            <label className="label font-medium text-gray-700 dark:text-gray-300">
+                                Description
+                            </label>
+                            <textarea
+                                placeholder="Describe your contest in detail..."
+                                {...register("description", { required: true })}
+                                className="textarea textarea-bordered h-32 w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            ></textarea>
+                        </motion.div>
+
+                        {/* Task Instruction */}
+                        <motion.div className="form-control md:col-span-2" variants={itemVariants}>
+                            <label className="label font-medium text-gray-700 dark:text-gray-300">
+                                Task Instruction
+                            </label>
+                            <textarea
+                                placeholder="Specific instructions for participants..."
+                                {...register("instruction", { required: true })}
+                                className="textarea textarea-bordered h-32 w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                            ></textarea>
+                        </motion.div>
                     </div>
-                    <div className="form-control">
-                        <label className="label">Image URL</label>
-                        <input type="text" {...register("image", { required: true })} className="input input-bordered" />
-                    </div>
-                    <div className="form-control">
-                        <label className="label">Contest Price</label>
-                        <input type="number" {...register("price", { required: true })} className="input input-bordered" />
-                    </div>
-                    <div className="form-control">
-                        <label className="label">Prize Money</label>
-                        <input type="text" {...register("prize", { required: true })} className="input input-bordered" />
-                    </div>
-                    <div className="form-control">
-                        <label className="label">Contest Type</label>
-                        <select defaultValue="default" {...register("type", { required: true })} className="select select-bordered">
-                            <option disabled value="default">Select a type</option>
-                            <option value="Image Design">Image Design</option>
-                            <option value="Article Writing">Article Writing</option>
-                            <option value="Marketing">Marketing</option>
-                            <option value="Business Idea">Business Idea</option>
-                        </select>
-                    </div>
-                    <div className="form-control">
-                        <label className="label">Deadline</label>
-                        <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} className="input input-bordered w-full" />
-                    </div>
-                    <div className="form-control md:col-span-2">
-                        <label className="label">Description</label>
-                        <textarea {...register("description", { required: true })} className="textarea textarea-bordered h-24"></textarea>
-                    </div>
-                    <div className="form-control md:col-span-2">
-                        <label className="label">Task Instruction</label>
-                        <textarea {...register("instruction", { required: true })} className="textarea textarea-bordered h-24"></textarea>
-                    </div>
-                </div>
-                <button className="btn btn-primary mt-6">Add Contest</button>
-            </form>
-        </div>
+
+                    <motion.div className="mt-8 flex justify-end" variants={itemVariants}>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            type="submit"
+                            className="btn btn-primary px-8 py-3 text-white font-bold rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
+                        >
+                            Add Contest
+                        </motion.button>
+                    </motion.div>
+                </form>
+            </motion.div>
+        </motion.div>
     );
 };
-
 export default AddContest;
