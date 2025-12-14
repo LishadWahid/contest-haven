@@ -16,7 +16,7 @@ app.use(cors({
     optionsSuccessStatus: 200
 }));
 app.use(express.json({ limit: '50mb' })); // handle large base64 images
-app.use(express.urlencoded({ limit: '50mb', extended: true })); // ✅ handle large form data
+app.use(express.urlencoded({ limit: '50mb', extended: true })); 
 app.use(cookieParser());
 
 const uri = process.env.DB_URI;
@@ -67,7 +67,7 @@ async function run() {
         const email = req.decoded.email.toLowerCase(); // Normalize email
         console.log('Verifying Admin Access for:', email);
         const user = await userCollection.findOne({ email });
-        console.log('User Role in DB:', user?.role);
+        console.log('User Role in Database:', user?.role);
 
         if (!user || user.role !== 'admin') {
             console.log('Admin Access DENIED for:', email);
@@ -85,8 +85,8 @@ async function run() {
 
     // users
     app.get('/users', verifyToken, verifyAdmin, async (req, res) => {
-        const result = await userCollection.find().toArray();
-        res.send(result);
+        const result = await userCollection.find().toArray()
+        res.send(result)
     });
 
     app.get('/users/admin/:email', verifyToken, async (req, res) => {
@@ -135,7 +135,7 @@ async function run() {
             { _id: new ObjectId(id) },
             { $set: { name, photo, address } }
         );
-        res.send(result);
+       res.send(result)
     });
 
     // contests

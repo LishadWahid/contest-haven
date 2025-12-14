@@ -32,8 +32,11 @@ const Project = () => {
                     <p className="text-orange-500 font-bold tracking-widest text-sm mb-4 uppercase">
                         ::: Why Choose Us
                     </p>
-                    <h2 className="text-4xl md:text-5xl font-extrabold text-black dark:text-white mb-10 leading-tight">
-                        The Best Platform for <br /> Creative Battles
+                    <h2 className="text-4xl md:text-5xl font-extrabold 
+               text-gray-900 dark:text-gray-400 
+               mb-10 leading-tight">
+                        The Best Platform for <br />
+                        <span className="text-orange-500">Creative Battles</span>
                     </h2>
 
                     <div className="space-y-4">
