@@ -101,7 +101,7 @@ const DashboardLayout = () => {
             {/* Sidebar Footer */}
             <div className="p-4 border-t border-white/10 bg-black/20">
                 <div className="flex items-center justify-center gap-2 text-xs text-white/40">
-                    <span>© 2024 ContestHub</span>
+                    <span>© 2025 ContestHub</span>
                 </div>
             </div>
         </aside>

@@ -7,8 +7,9 @@ const SubmissionsPage = () => {
     const { id } = useParams();
     const axiosSecure = useAxiosSecure();
 
-    const { data: submissions = [] } = useQuery({
+    const { data: submissions = [], refetch } = useQuery({
         queryKey: ['submissions', id],
+        refetchOnMount: 'always',
         queryFn: async () => {
             const res = await axiosSecure.get(`/submissions/${id}`);
             return res.data;

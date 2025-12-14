@@ -88,12 +88,13 @@ const CheckoutForm = ({ contest, total }) => {
 
             try {
                 const res = await axiosSecure.post('/payments', paymentData);
-                if (res.data?.insertedId || res.data?._id) {
-                    toast.success('🎉 Payment successful! Redirecting to dashboard...');
+                console.log('Payment save response:', res.data);
+                if (res.data?.paymentResult?.insertedId) {
+                    toast.success('🎉 Payment successful! You are now registered.');
                     // smooth redirect after 1.5 sec
                     setTimeout(() => navigate('/dashboard/participated'), 1500);
                 } else {
-                    setError('Payment succeeded but registration failed. Contact support.');
+                    setError('Payment succeeded but registration response was unexpected. Please check your dashboard.');
                     setProcessing(false);
                 }
             } catch (err) {

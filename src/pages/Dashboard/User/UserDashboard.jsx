@@ -46,9 +46,19 @@ const UserDashboard = () => {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 dark:from-blue-700 dark:via-indigo-700 dark:to-violet-700 rounded-2xl p-8 shadow-xl">
-                <h2 className="text-4xl font-bold text-white mb-2">My Dashboard</h2>
-                <p className="text-white/90 text-lg">Welcome back, {user?.displayName}!</p>
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 dark:from-blue-700 dark:via-indigo-700 dark:to-violet-700 rounded-2xl p-8 shadow-xl flex items-center justify-between">
+                <div>
+                    <h2 className="text-4xl font-bold text-white mb-2">My Dashboard</h2>
+                    <p className="text-white/90 text-lg">Welcome back, {user?.displayName}!</p>
+                </div>
+                <div className="hidden md:block">
+                    <img
+                        src={user?.photoURL || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop"}
+                        alt="Profile"
+                        className="w-24 h-24 rounded-full border-4 border-white/30 shadow-2xl object-cover"
+                    />
+                </div>
             </div>
 
             {/* Stats Cards */}

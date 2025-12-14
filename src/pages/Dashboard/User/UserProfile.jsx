@@ -79,10 +79,12 @@ const UserProfile = () => {
             {/* Header with Gradient */}
             <div className="bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 dark:from-pink-700 dark:via-purple-700 dark:to-indigo-700 rounded-2xl p-8 shadow-xl">
                 <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                        </svg>
+                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center overflow-hidden border-2 border-white/50 shadow-lg">
+                        <img
+                            src={mongoUser.photo || user?.photoURL || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200&auto=format&fit=crop"}
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                        />
                     </div>
                     <div>
                         <h2 className="text-4xl font-bold text-white mb-1">My Profile</h2>

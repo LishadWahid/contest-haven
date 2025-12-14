@@ -229,7 +229,7 @@ const ContestDetails = () => {
                                     name="task"
                                     required
                                     placeholder="Paste your submission link here..."
-                                    className="w-full h-32 p-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-purple-500 outline-none resize-none mb-6"
+                                    className="w-full h-32 p-4 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none resize-none mb-6"
                                 ></textarea>
                                 <div className="flex justify-end gap-3">
                                     <button

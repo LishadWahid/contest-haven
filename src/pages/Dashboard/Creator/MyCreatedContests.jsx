@@ -87,8 +87,8 @@ const MyCreatedContests = () => {
                                     </td>
                                     <td>
                                         <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${contest.status === 'approved' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
-                                                contest.status === 'pending' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' :
-                                                    'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
+                                            contest.status === 'pending' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' :
+                                                'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
                                             }`}>
                                             {contest.status}
                                         </span>
@@ -117,7 +117,7 @@ const MyCreatedContests = () => {
                                             {contest.status === 'approved' && (
                                                 <Link
                                                     to={`/dashboard/submissions/${contest._id}`}
-                                                    className="btn btn-sm px-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white border-none hover:shadow-lg hover:scale-105 transition-all w-auto h-9 font-medium"
+                                                    className="btn btn-sm px-4 bg-gradient-to-r from-green-500 to-emerald-600 !text-white border-none hover:shadow-lg hover:scale-105 transition-all w-auto h-9 font-medium"
                                                 >
                                                     See Submissions
                                                 </Link>

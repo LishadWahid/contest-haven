@@ -1,5 +1,6 @@
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { useQuery } from '@tanstack/react-query';
+import { FaTrophy } from 'react-icons/fa';
 
 const Leaderboard = () => {
     const axiosPublic = useAxiosPublic();
@@ -9,10 +10,11 @@ const Leaderboard = () => {
         queryFn: async () => {
             const res = await axiosPublic.get('/users/leaderboard');
             return res.data;
-        }
+        },
+        staleTime: 0,
+        refetchOnMount: 'always',
+        refetchOnWindowFocus: true
     });
-
-    // Client-side aggregation removed in favor of server-side aggregation
 
     return (
         <div className="my-10 px-4">
@@ -28,7 +30,7 @@ const Leaderboard = () => {
                     </thead>
                     <tbody>
                         {leaderboard.map((user, index) => (
-                            <tr key={user.email}>
+                            <tr key={user._id}>
                                 <th>{index + 1}</th>
                                 <td>
                                     <div className="flex items-center gap-3">
@@ -39,16 +41,25 @@ const Leaderboard = () => {
                                         </div>
                                         <div>
                                             <div className="font-bold">{user.name}</div>
-                                            <div className="text-sm opacity-50">{user.email}</div>
+                                            <div className="text-sm opacity-50">{user._id}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td>{user.wins}</td>
+                                <td>
+                                    <span className="font-bold text-lg text-orange-500">
+                                        <FaTrophy className="inline mr-1 mb-1" />
+                                        {user.wins}
+                                    </span>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                {leaderboard.length === 0 && <p className="text-center mt-4">No winners yet!</p>}
+                {leaderboard.length === 0 && (
+                    <div className="text-center py-10">
+                        <p className="text-gray-500 text-lg">No winners declared yet!</p>
+                    </div>
+                )}
             </div>
         </div>
     );

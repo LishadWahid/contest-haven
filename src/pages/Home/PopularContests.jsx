@@ -102,7 +102,7 @@ const PopularContests = () => {
                                     <div className="flex flex-col">
                                         <span className="text-[10px] text-gray-500 uppercase tracking-wide font-bold">Prize</span>
                                         <span className="text-sm font-bold text-gray-900 flex items-center gap-1">
-                                            <FaTrophy className="text-accent text-xs" /> {contest.prize}
+                                            <FaTrophy className="text-accent text-xs" /> ${String(contest.prize).replace(/\$/g, '')}
                                         </span>
                                     </div>
                                     <div className="text-right flex flex-col items-end">
