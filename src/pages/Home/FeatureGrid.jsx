@@ -37,7 +37,7 @@ const FeatureGrid = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 rounded-3xl overflow-hidden shadow-2xl">
 
                 {/* Block 1: Stats & CTA */}
-                <div className="bg-orange-500 p-12 flex flex-col justify-center items-center text-center text-white min-h-[350px] relative group overflow-hidden">
+                <div className="bg-gradient-to-r from-primary to-secondary p-12 flex flex-col justify-center items-center text-center text-white min-h-[350px] relative group overflow-hidden">
                     <div className="absolute inset-0 bg-black/10 scale-0 group-hover:scale-100 transition-transform duration-500 rounded-full opacity-20"></div>
 
                     <h2 className="text-6xl font-extrabold mb-2 relative z-10 flex items-center">
@@ -48,7 +48,7 @@ const FeatureGrid = () => {
                     </h3>
 
                     <Link to="/all-contests">
-                        <button className="bg-white text-orange-600 px-8 py-3 rounded font-bold uppercase tracking-wider text-xs hover:bg-gray-100 transition-colors flex items-center gap-2 relative z-10">
+                        <button className="bg-white text-[#7c3aed] px-8 py-3 rounded font-bold uppercase tracking-wider text-xs hover:bg-gray-100 transition-colors flex items-center gap-2 relative z-10">
                             Explore Now <FaArrowRight />
                         </button>
                     </Link>
@@ -65,7 +65,7 @@ const FeatureGrid = () => {
                 </div>
 
                 {/* Block 3: Expert Talent */}
-                <div className="bg-orange-500 p-12 flex flex-col justify-center items-center text-center text-white min-h-[350px] relative group overflow-hidden">
+                <div className="bg-gradient-to-r from-primary to-secondary p-12 flex flex-col justify-center items-center text-center text-white min-h-[350px] relative group overflow-hidden">
                     <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
 
                     <div className="mb-6 relative z-10">
@@ -77,7 +77,7 @@ const FeatureGrid = () => {
                     </h3>
 
                     <Link to="/leaderboard">
-                        <button className="bg-white text-orange-600 px-8 py-3 rounded font-bold uppercase tracking-wider text-xs hover:bg-gray-100 transition-colors flex items-center gap-2 relative z-10">
+                        <button className="bg-white text-[#7c3aed] px-8 py-3 rounded font-bold uppercase tracking-wider text-xs hover:bg-gray-100 transition-colors flex items-center gap-2 relative z-10">
                             Find Experts
                         </button>
                     </Link>

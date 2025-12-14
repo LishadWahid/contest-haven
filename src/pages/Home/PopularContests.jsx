@@ -86,7 +86,7 @@ const PopularContests = () => {
 
                                 {/* Overlay Text */}
                                 <div className="absolute bottom-2 left-3 right-3 z-10">
-                                    <h2 className="text-sm font-bold text-white mb-0.5 line-clamp-1 drop-shadow-md group-hover:text-secondary transition-colors">
+                                    <h2 className="text-sm font-bold text-white mb-0.5 line-clamp-1 drop-shadow-md group-hover:text-[#7c3aed] transition-colors">
                                         {contest.name}
                                     </h2>
                                     <div className="flex items-center gap-1.5 text-white/90 text-[10px] font-medium">
@@ -102,7 +102,7 @@ const PopularContests = () => {
                                     <div className="flex flex-col">
                                         <span className="text-[10px] text-gray-500 uppercase tracking-wide font-bold">Prize</span>
                                         <span className="text-sm font-bold text-gray-900 flex items-center gap-1">
-                                            <FaTrophy className="text-accent text-xs" /> ${contest.prize}
+                                            <FaTrophy className="text-accent text-xs" /> {contest.prize}
                                         </span>
                                     </div>
                                     <div className="text-right flex flex-col items-end">

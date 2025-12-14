@@ -66,7 +66,7 @@ const BestCreators = () => {
         <div className="my-16 w-full mx-auto px-4 font-sans">
             {/* Header Section */}
             <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent uppercase tracking-wider mb-2 drop-shadow-sm">
+                <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-[#7c3aed] uppercase tracking-wider mb-2 drop-shadow-sm">
                     Our Top Creators
                 </h2>
                 <div className="flex justify-center items-center gap-1">
