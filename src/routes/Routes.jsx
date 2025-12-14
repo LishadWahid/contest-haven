@@ -13,6 +13,7 @@ import AdminRoute from "./AdminRoute";
 import CreatorRoute from "./CreatorRoute";
 import HowItWorks from "../pages/Extra/HowItWorks";
 import FAQ from "../pages/Extra/FAQ";
+import About from "../pages/Extra/About";
 
 // Dashboard
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
       { path: "/leaderboard", element: <Leaderboard /> },
       { path: "/how-it-works", element: <HowItWorks /> },
       { path: "/faq", element: <FAQ /> },
+      { path: "/about", element: <About /> },
       {
         path: "/contest/:id",
         element: (

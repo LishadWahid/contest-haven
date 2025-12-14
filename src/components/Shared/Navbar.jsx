@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import logo from "../../assets/images/logo.jpg";
 import Container from "./Container";
 import useAuth from "../hooks/useAuth";
+import trophyImg from "../../assets/images/Trophy.png"
 
 const Navbar = () => {
     const { user, logOut } = useAuth();
@@ -42,7 +43,7 @@ const Navbar = () => {
                         {/* ---------- LOGO + WEBSITE NAME ---------- */}
                         <Link to="/" className="flex items-center gap-2">
                             <img
-                                src={logo}
+                                src={trophyImg}
                                 alt="logo"
                                 width="45"
                                 height="45"
