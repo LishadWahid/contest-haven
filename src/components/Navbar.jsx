@@ -30,6 +30,8 @@ const Navbar = () => {
         <li><NavLink to="/">Home</NavLink></li>
         <li><NavLink to="/all-contests">All Contests</NavLink></li>
         <li><NavLink to="/leaderboard">Leaderboard</NavLink></li>
+        <li><NavLink to="/how-it-works">How it works</NavLink></li>
+        <li><NavLink to="/faq">FAQ</NavLink></li>
     </>
 
     return (

@@ -45,73 +45,72 @@ const AddContest = () => {
     }
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-4 md:p-8">
-            <h2 className="text-3xl font-bold mb-8 text-center text-gray-800 dark:text-white">Add New Contest</h2>
-            <div className="bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8">
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Contest Name */}
-                        <div className="form-control">
-                            <label className="label font-medium text-gray-700 dark:text-gray-300">
-                                Contest Name
-                            </label>
+        <div className="space-y-6">
+            {/* Header with Gradient */}
+            <div className="bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 dark:from-pink-700 dark:via-rose-700 dark:to-red-700 rounded-2xl p-8 shadow-xl">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-4xl font-bold text-white mb-2">Create New Contest</h2>
+                        <p className="text-white/90 text-lg">Share your challenge with the world</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Form Section */}
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {/* Name */}
+                        <div className="form-control space-y-2">
+                            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Contest Name</label>
                             <input
                                 type="text"
-                                placeholder="e.g., Logo Design Challenge"
+                                placeholder="e.g. Ultimate Logo Design"
                                 {...register("name", { required: true })}
-                                className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none transition-all"
                             />
                         </div>
 
                         {/* Image URL */}
-                        <div className="form-control">
-                            <label className="label font-medium text-gray-700 dark:text-gray-300">
-                                Image URL
-                            </label>
+                        <div className="form-control space-y-2">
+                            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Image URL</label>
                             <input
                                 type="text"
-                                placeholder="https://example.com/image.jpg"
+                                placeholder="https://..."
                                 {...register("image", { required: true })}
-                                className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none transition-all"
                             />
                         </div>
 
-                        {/* Contest Price */}
-                        <div className="form-control">
-                            <label className="label font-medium text-gray-700 dark:text-gray-300">
-                                Entry Price ($)
-                            </label>
+                        {/* Price */}
+                        <div className="form-control space-y-2">
+                            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Entry Fees ($)</label>
                             <input
                                 type="number"
                                 placeholder="0.00"
-                                step="0.01"
                                 {...register("price", { required: true })}
-                                className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none transition-all"
                             />
                         </div>
 
                         {/* Prize Money */}
-                        <div className="form-control">
-                            <label className="label font-medium text-gray-700 dark:text-gray-300">
-                                Prize Money
-                            </label>
+                        <div className="form-control space-y-2">
+                            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Prize Money ($)</label>
                             <input
                                 type="text"
-                                placeholder="e.g., $500 + Certificate"
+                                placeholder="1000"
                                 {...register("prize", { required: true })}
-                                className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none transition-all"
                             />
                         </div>
 
-                        {/* Contest Type */}
-                        <div className="form-control">
-                            <label className="label font-medium text-gray-700 dark:text-gray-300">
-                                Contest Type
-                            </label>
+                        {/* Type */}
+                        <div className="form-control space-y-2">
+                            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Contest Type</label>
                             <select
                                 defaultValue="default"
                                 {...register("type", { required: true })}
-                                className="select select-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none transition-all"
                             >
                                 <option disabled value="default">Select a type</option>
                                 <option value="Image Design">Image Design</option>
@@ -122,56 +121,45 @@ const AddContest = () => {
                         </div>
 
                         {/* Deadline */}
-                        <div className="form-control">
-                            <label className="label font-medium text-gray-700 dark:text-gray-300">
-                                Deadline
-                            </label>
-                            <div className="w-full">
+                        <div className="form-control space-y-2">
+                            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Deadline</label>
+                            <div>
                                 <DatePicker
                                     selected={startDate}
                                     onChange={(date) => setStartDate(date)}
-                                    className="input input-bordered w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
-                                    wrapperClassName="w-full"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none transition-all box-border block"
                                 />
                             </div>
                         </div>
 
                         {/* Description */}
-                        <div className="form-control md:col-span-2">
-                            <label className="label font-medium text-gray-700 dark:text-gray-300">
-                                Description
-                            </label>
+                        <div className="form-control md:col-span-2 space-y-2">
+                            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Description</label>
                             <textarea
-                                placeholder="Describe your contest in detail..."
                                 {...register("description", { required: true })}
-                                className="textarea textarea-bordered h-32 w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                placeholder="Describe your contest in detail..."
+                                className="w-full px-4 py-3 h-32 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none transition-all resize-none"
                             ></textarea>
                         </div>
 
-                        {/* Task Instruction */}
-                        <div className="form-control md:col-span-2">
-                            <label className="label font-medium text-gray-700 dark:text-gray-300">
-                                Task Instruction
-                            </label>
+                        {/* Instruction */}
+                        <div className="form-control md:col-span-2 space-y-2">
+                            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Detailed Task Instructions</label>
                             <textarea
-                                placeholder="Specific instructions for participants..."
                                 {...register("instruction", { required: true })}
-                                className="textarea textarea-bordered h-32 w-full focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                placeholder="Step by step instructions for participants..."
+                                className="w-full px-4 py-3 h-32 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-pink-500 outline-none transition-all resize-none"
                             ></textarea>
                         </div>
                     </div>
 
-                    <div className="mt-8 flex justify-end">
-                        <button
-                            type="submit"
-                            className="btn btn-primary px-8 py-3 text-white font-bold rounded-lg shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300"
-                        >
-                            Add Contest
-                        </button>
-                    </div>
+                    <button className="btn w-full mt-8 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 text-white border-none py-4 text-lg font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all">
+                        🚀 Launch Contest
+                    </button>
                 </form>
             </div>
         </div>
     );
 };
+
 export default AddContest;

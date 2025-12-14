@@ -1,9 +1,13 @@
+import { useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 
 const ManageUsers = () => {
     const axiosSecure = useAxiosSecure();
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
     const { data: users = [], refetch } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
@@ -28,6 +32,16 @@ const ManageUsers = () => {
             })
     }
 
+    // Pagination Logic
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentUsers = users.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(users.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
     return (
         <div className="space-y-6">
             {/* Header with Gradient */}
@@ -36,11 +50,6 @@ const ManageUsers = () => {
                     <div>
                         <h2 className="text-4xl font-bold text-white mb-2">Manage Users</h2>
                         <p className="text-white/90 text-lg">Total Users: <span className="font-bold">{users.length}</span></p>
-                    </div>
-                    <div className="hidden md:flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm">
-                        <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                        </svg>
                     </div>
                 </div>
             </div>
@@ -59,17 +68,17 @@ const ManageUsers = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((user, index) => (
+                            {currentUsers.map((user, index) => (
                                 <tr key={user._id} className="hover:bg-purple-50 dark:hover:bg-gray-700/50 transition-colors border-b border-gray-200 dark:border-gray-700">
-                                    <th className="text-gray-900 dark:text-gray-100 font-bold">{index + 1}</th>
+                                    <th className="text-gray-900 dark:text-gray-100 font-bold">{indexOfFirstItem + index + 1}</th>
                                     <td className="font-semibold text-gray-900 dark:text-white">{user.name}</td>
                                     <td className="text-gray-600 dark:text-gray-400">{user.email}</td>
                                     <td>
                                         <span className={`inline-flex px-3 py-1.5 rounded-full text-sm font-semibold ${user.role === 'admin'
-                                                ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300'
-                                                : user.role === 'creator'
-                                                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-                                                    : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                                            ? 'bg-red-100 text-red-700 dark:bg-red-900/10'
+                                            : user.role === 'creator'
+                                                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/10'
+                                                : 'bg-green-100 text-green-700 dark:bg-green-900/10'
                                             }`}>
                                             {user.role === 'admin' && '👑 '}
                                             {user.role === 'creator' && '✨ '}
@@ -97,13 +106,36 @@ const ManageUsers = () => {
                 {/* Empty State */}
                 {users.length === 0 && (
                     <div className="text-center py-20">
-                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-purple-100 dark:bg-purple-900/30 mb-4">
-                            <svg className="w-10 h-10 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-                            </svg>
-                        </div>
                         <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Users Found</h3>
-                        <p className="text-gray-600 dark:text-gray-400">There are no users in the system.</p>
+                    </div>
+                )}
+
+                {/* Pagination Controls */}
+                {users.length > itemsPerPage && (
+                    <div className="flex justify-center items-center py-6 gap-2">
+                        <button
+                            className="btn btn-sm btn-outline"
+                            disabled={currentPage === 1}
+                            onClick={() => handlePageChange(currentPage - 1)}
+                        >
+                            Prev
+                        </button>
+                        {[...Array(totalPages)].map((_, i) => (
+                            <button
+                                key={i}
+                                className={`btn btn-sm ${currentPage === i + 1 ? 'btn-primary' : 'btn-ghost'}`}
+                                onClick={() => handlePageChange(i + 1)}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+                        <button
+                            className="btn btn-sm btn-outline"
+                            disabled={currentPage === totalPages}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                        >
+                            Next
+                        </button>
                     </div>
                 )}
             </div>

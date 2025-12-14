@@ -4,33 +4,15 @@ import { useQuery } from '@tanstack/react-query';
 const Leaderboard = () => {
     const axiosPublic = useAxiosPublic();
 
-    // Fetch all contests to calculate wins
-    const { data: contests = [] } = useQuery({
-        queryKey: ['allContestsLeaderboard'],
+    const { data: leaderboard = [] } = useQuery({
+        queryKey: ['leaderboard'],
         queryFn: async () => {
-            const res = await axiosPublic.get('/contests');
+            const res = await axiosPublic.get('/users/leaderboard');
             return res.data;
         }
     });
 
-    // Aggregate wins
-    const winsMap = {};
-    contests.forEach(contest => {
-        if (contest.winner?.email) {
-            const email = contest.winner.email;
-            if (!winsMap[email]) {
-                winsMap[email] = {
-                    email: email,
-                    name: contest.winner.name,
-                    photo: contest.winner.photo || 'https://placehold.co/50',
-                    wins: 0
-                }
-            }
-            winsMap[email].wins += 1;
-        }
-    });
-
-    const leaderboard = Object.values(winsMap).sort((a, b) => b.wins - a.wins);
+    // Client-side aggregation removed in favor of server-side aggregation
 
     return (
         <div className="my-10 px-4">
