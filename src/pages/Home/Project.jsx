@@ -29,30 +29,30 @@ const Project = () => {
 
                 {/* Left Content */}
                 <div className="w-full lg:w-1/2 flex flex-col justify-center">
-                    <p className="text-orange-500 font-bold tracking-widest text-sm mb-4 uppercase">
+                    <p className="text-[#7c3aed] font-bold tracking-widest text-sm mb-4 uppercase">
                         ::: Why Choose Us
                     </p>
                     <h2 className="text-4xl md:text-5xl font-extrabold 
                text-gray-900 dark:text-gray-400 
                mb-10 leading-tight">
                         The Best Platform for <br />
-                        <span className="text-orange-500">Creative Battles</span>
+                        <span className="text-[#7c3aed]">Creative Battles</span>
                     </h2>
 
                     <div className="space-y-4">
                         {accordions.map((item, index) => (
                             <div
                                 key={index}
-                                className={`transition-all duration-300 ease-in-out border-l-4 ${openIndex === index ? 'border-orange-500 bg-gray-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900'} shadow-sm`}
+                                className={`transition-all duration-300 ease-in-out border-l-4 ${openIndex === index ? 'text-[#7c3aed] bg-gray-50 dark:bg-gray-800' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900'} shadow-sm`}
                             >
                                 <button
                                     onClick={() => setOpenIndex(index === openIndex ? -1 : index)}
                                     className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
                                 >
-                                    <span className={`text-lg font-bold ${openIndex === index ? 'text-orange-500' : 'text-gray-700 dark:text-gray-200'}`}>
+                                    <span className={`text-lg font-bold ${openIndex === index ? 'text-[#7c3aed]' : 'text-gray-700 dark:text-gray-200'}`}>
                                         {`0${index + 1}. ${item.title}`}
                                     </span>
-                                    <span className={`p-2 rounded-sm ${openIndex === index ? 'bg-orange-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'}`}>
+                                    <span className={`p-2 rounded-sm ${openIndex === index ? 'text-[#7c3aed] text-blue' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'}`}>
                                         {openIndex === index ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
                                     </span>
                                 </button>
@@ -87,7 +87,7 @@ const Project = () => {
                     </div>
 
                     {/* Decorative Box */}
-                    <div className="absolute bottom-10 right-10 bg-orange-500 p-6 rounded text-white shadow-xl hidden md:block">
+                    <div className="absolute bottom-10 right-10 text-[#7c3aed] p-6 rounded text-white shadow-xl hidden md:block">
                         <div className="text-3xl font-bold mb-1">100%</div>
                         <div className="text-xs uppercase tracking-wider opacity-90">Trusted Platform</div>
                     </div>
