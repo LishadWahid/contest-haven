@@ -2,7 +2,7 @@
 
 ContestHub is a modern, full-stack contest management platform designed to connect creative minds with opportunities. Whether you're a designer, writer, or innovator, ContestHub allows you to participate in global contests or host your own to find the best talent.
 
-**Live Site URL**: [https://contest-haven.web.app](https://contest-haven.web.app) (Example URL)
+**Live Site URL**: [https://charming-chimera-aed089.netlify.app/](https://charming-chimera-aed089.netlify.app/)
 
 ## 🚀 Key Features
 
