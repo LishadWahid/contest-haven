@@ -24,6 +24,7 @@ ContestHub is a modern, full-stack contest management platform designed to conne
 
 *   **Frontend**: React, TailwindCSS, DaisyUI, Framer Motion, Recharts, React Router DOM.
 *   **Backend**: Node.js, Express.js, MongoDB (Native Driver), JWT.
+*   **Deployment**: Client on Netlify, Server on Vercel.
 *   **Tools**: Vite, Axios, TanStack Query, React Hook Form, SweetAlert2.
 *   **Payment**: Stripe.
 *   **Auth**: Firebase & JWT.
