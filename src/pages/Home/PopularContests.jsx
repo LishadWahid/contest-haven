@@ -6,19 +6,11 @@ import { FaUserFriends, FaTrophy, FaArrowRight, FaClock } from "react-icons/fa";
 const PopularContests = () => {
     const axiosPublic = useAxiosPublic();
 
-    const { data: popular = [], isLoading, error } = useQuery({
+    const { data: popular = [], isLoading } = useQuery({
         queryKey: ['popularContests'],
         queryFn: async () => {
-            console.log('Fetching popular contests from:', axiosPublic.defaults.baseURL);
-            try {
-                const res = await axiosPublic.get('/contests/popular');
-                console.log('Popular contests response:', res.data);
-                return res.data;
-            } catch (err) {
-                console.error('Error fetching popular contests:', err);
-                console.error('Error details:', err.response?.data || err.message);
-                throw err;
-            }
+            const res = await axiosPublic.get('/contests/popular');
+            return res.data;
         }
     })
 
@@ -26,18 +18,6 @@ const PopularContests = () => {
         return (
             <div className="min-h-[400px] flex justify-center items-center">
                 <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-        )
-    }
-
-    if (error) {
-        return (
-            <div className="min-h-[400px] flex justify-center items-center">
-                <div className="text-center">
-                    <p className="text-red-500 text-xl mb-2">Error loading contests</p>
-                    <p className="text-gray-600">{error.message}</p>
-                    <p className="text-sm text-gray-500 mt-2">Check browser console for details</p>
-                </div>
             </div>
         )
     }

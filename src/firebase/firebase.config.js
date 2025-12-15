@@ -3,12 +3,12 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_apiKey,
-    authDomain: import.meta.env.VITE_authDomain,
-    projectId: import.meta.env.VITE_projectId,
-    storageBucket: import.meta.env.VITE_storageBucket,
-    messagingSenderId: import.meta.env.VITE_messagingSenderId,
-    appId: import.meta.env.VITE_appId
+    apiKey: "AIzaSyBNxzZDKXSyv7r8I99CtXu--qVepVNkypw",
+    authDomain: "contest-haven.firebaseapp.com",
+    projectId: "contest-haven",
+    storageBucket: "contest-haven.firebasestorage.app",
+    messagingSenderId: "362606153570",
+    appId: "1:362606153570:web:19412d860cd9045270263b"
 };
 
 const app = initializeApp(firebaseConfig);

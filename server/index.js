@@ -10,8 +10,9 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Manual CORS headers to ensure they're always present
+// Manual CORS headers to ensure they're always present
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://chipper-cajeta-5f98e5.netlify.app');
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -24,10 +25,11 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-    origin: 'https://chipper-cajeta-5f98e5.netlify.app',
+    origin: true,
     credentials: true,
     optionsSuccessStatus: 200
 }));
+
 app.use(express.json({ limit: '50mb' })); // handle large base64 images
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());

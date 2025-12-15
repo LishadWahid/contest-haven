@@ -43,11 +43,7 @@ export const router = createBrowserRouter([
       { path: "/about", element: <About /> },
       {
         path: "/contest/:id",
-        element: (
-          <PrivateRoute>
-            <ContestDetails />
-          </PrivateRoute>
-        )
+        element: <ContestDetails />
       },
       {
         path: "/payment/:id",
