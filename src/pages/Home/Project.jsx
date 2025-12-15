@@ -87,7 +87,7 @@ const Project = () => {
                     </div>
 
                     {/* Decorative Box */}
-                    <div className="absolute bottom-10 right-10 text-[#7c3aed] p-6 rounded text-white shadow-xl hidden md:block">
+                    <div className="absolute bottom-10 right-10 text-[#7c3aed] p-6 rounded text-blue shadow-xl hidden md:block">
                         <div className="text-3xl font-bold mb-1">100%</div>
                         <div className="text-xs uppercase tracking-wider opacity-90">Trusted Platform</div>
                     </div>

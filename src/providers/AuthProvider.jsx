@@ -44,7 +44,7 @@ const AuthProvider = ({ children }) => {
       if (currentUser) {
         // Get token and store in local storage or cookie
         const userInfo = { email: currentUser.email };
-        axios.post('http://localhost:5000/auth/jwt', userInfo)
+        axios.post('http://:5000/auth/jwt', userInfo)
           .then(res => {
             if (res.data.token) {
               localStorage.setItem('access-token', res.data.token);
