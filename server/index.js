@@ -427,4 +427,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => res.send('ContestHub Server is Running'));
-app.listen(port, () => console.log(`Server is running on port: ${port}`));
+app.listen(port, () => {
+    console.log(`Server is running on port: ${port}`);
+    console.log('Server updated with universal CORS');
+});
