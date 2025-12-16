@@ -19,11 +19,7 @@ app.get('/', (req, res) => {
 });
 
 app.use(cors({
-    origin: [
-        "http://localhost:5173",
-        "https://neon-starship-6daa08.netlify.app",
-        "https://neon-starship-6daa08.netlify.app/"
-    ],
+    origin: "*",
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
