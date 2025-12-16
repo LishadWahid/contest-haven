@@ -9,6 +9,15 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Root route - defined FIRST to check server status without DB
+app.get('/', (req, res) => {
+    res.send({
+        status: 'Unprotected Server is Running',
+        db_status: database ? 'Connected' : 'Disconnected',
+        env_check: process.env.DB_URI ? 'DB_URI Found' : 'DB_URI Missing'
+    });
+});
+
 app.use(cors({
     origin: true,
     credentials: true,
@@ -21,19 +30,29 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 
 const uri = process.env.DB_URI;
-const client = new MongoClient(uri, {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    }
-});
+// Create client only if URI exists to avoid immediate startup crash
+let client;
+if (uri) {
+    client = new MongoClient(uri, {
+        serverApi: {
+            version: ServerApiVersion.v1,
+            strict: true,
+            deprecationErrors: true,
+        }
+    });
+} else {
+    console.error("CRITICAL ERROR: DB_URI is missing in environment variables!");
+}
 
 let database, userCollection, contestCollection, paymentCollection, submissionCollection;
 
 async function connectDB() {
     // If database is already connected, return
     if (database) return;
+    if (!client) {
+        console.error("Cannot connect: Client not initialized (DB_URI missing)");
+        return;
+    }
     try {
         await client.connect();
         database = client.db("contesthub");
@@ -49,6 +68,9 @@ async function connectDB() {
 
 // Ensure DB is connected for every request
 app.use(async (req, res, next) => {
+    // Skip DB connection for root route (already handled, but safety check)
+    if (req.path === '/') return next();
+
     await connectDB();
     next();
 });
