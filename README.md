@@ -3,7 +3,7 @@
 ContestHub is a modern, full-stack contest management platform designed to connect creative minds with opportunities. Whether you're a designer, writer, or innovator, ContestHub allows you to participate in global contests or host your own to find the best talent.
 
 ## 🔗 Live Links
-- **Live Site (Frontend):** [https://dist-eiljizk9g-lishads-projects-69221e56.vercel.app](https://dist-eiljizk9g-lishads-projects-69221e56.vercel.app)
+- **Live Site (Frontend):** [https://neon-starship-6daa08.netlify.app](https://neon-starship-6daa08.netlify.app)
 - **Live Server (Backend):** [https://server-g1xlycmfe-lishads-projects-69221e56.vercel.app](https://server-g1xlycmfe-lishads-projects-69221e56.vercel.app)
 
 ## 💻 Local Development

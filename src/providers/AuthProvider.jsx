@@ -44,7 +44,7 @@ const AuthProvider = ({ children }) => {
       if (currentUser) {
         // Get token and store in local storage or cookie
         const userInfo = { email: currentUser.email };
-        const baseUrl = import.meta.env.PROD ? 'https://server-g1xlycmfe-lishads-projects-69221e56.vercel.app' : 'http://localhost:5000';
+        const baseUrl = import.meta.env.PROD ? 'https://server-25uzqrdvp-lishads-projects-69221e56.vercel.app' : 'http://localhost:5000';
         axios.post(`${baseUrl}/auth/jwt`, userInfo)
           .then(res => {
             if (res.data.token) {
