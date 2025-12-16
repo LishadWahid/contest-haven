@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosPublic = axios.create({
-    baseURL: import.meta.env.PROD ? 'https://server-25uzqrdvp-lishads-projects-69221e56.vercel.app' : 'http://localhost:5000'
+    baseURL: import.meta.env.PROD ? 'https://server-bd0wczuis-lishads-projects-69221e56.vercel.app' : 'http://localhost:5000'
 })
 
 const useAxiosPublic = () => {

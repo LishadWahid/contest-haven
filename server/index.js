@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 app.use(cors({
-    origin: true,
+    origin: ["http://localhost:5173", "https://neon-starship-6daa08.netlify.app"],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -463,7 +463,7 @@ app.patch('/contests/winner/:id', verifyToken, async (req, res) => {
     return res.status(403).send({ message: 'You do not have permission to declare winners' });
 });
 
-app.get('/', (req, res) => res.send('ContestHub Server is Running'));
+
 
 // Start server if run directly
 if (require.main === module) {
