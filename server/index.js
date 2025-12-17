@@ -3,30 +3,37 @@ const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+// Initialize Stripe
+const stripe = process.env.STRIPE_SECRET_KEY
+    ? require('stripe')(process.env.STRIPE_SECRET_KEY)
+    : null;
+
+if (!stripe) {
+    console.warn('⚠️  Stripe not initialized - STRIPE_SECRET_KEY missing');
+}
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+
+
 // Middleware
-app.use(process.env.NODE_ENV === 'production'
-    ? cors({
-        origin: [
-            "https://neon-starship-6daa08.netlify.app",
-            "https://neon-starship-6daa08.netlify.app/"
-        ],
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-    })
-    : cors() // Allow all in dev
-);
+app.use(cors({
+    origin: [
+        "https://dapper-bienenstitch-94c27f.netlify.app",
+        "http://localhost:5173",
+        "http://localhost:5000"
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Database Connection
-const uri = process.env.DB_URI;
+// Database Connection Logic
 let client;
 let database;
 let userCollection;
@@ -34,62 +41,82 @@ let contestCollection;
 let paymentCollection;
 let submissionCollection;
 
-if (!uri) {
-    console.error("CRITICAL ERROR: DB_URI is missing!");
-} else {
-    client = new MongoClient(uri, {
-        serverApi: {
-            version: ServerApiVersion.v1,
-            strict: true,
-            deprecationErrors: true,
-        }
-    });
-}
-
 async function connectDB() {
     if (database) return;
+
+    if (!client) {
+        const uri = process.env.DB_URI || process.env.MONGODB_URI;
+
+        if (!uri) {
+            throw new Error('Database URI not found in environment variables');
+        }
+
+        try {
+            client = new MongoClient(uri, {
+                serverApi: {
+                    version: ServerApiVersion.v1,
+                    strict: true,
+                    deprecationErrors: true,
+                }
+            });
+            await client.connect();
+        } catch (e) {
+            console.error("Failed to connect to MongoDB:", e.message);
+            throw e;
+        }
+    }
+
     try {
-        if (!client) throw new Error("Client not initialized");
-        await client.connect();
-        database = client.db("contesthub");
-        userCollection = database.collection("users");
-        contestCollection = database.collection("contests");
-        paymentCollection = database.collection("payments");
-        submissionCollection = database.collection("submissions");
-        console.log("MongoDB connected successfully");
+        if (!database) {
+            database = client.db("contesthub");
+            userCollection = database.collection("users");
+            contestCollection = database.collection("contests");
+            paymentCollection = database.collection("payments");
+            submissionCollection = database.collection("submissions");
+            console.log("✅ MongoDB connected successfully");
+        }
     } catch (error) {
-        console.error("MongoDB connection failed:", error);
-        throw error; // Propagate error so request fails gracefully
+        console.error("MongoDB setup failed:", error);
+        throw error;
     }
 }
 
-// Ensure DB is connected for every request
+// --- ROUTES ---
+
+// Health Check - NO DB Dependency
+app.get('/', (req, res) => {
+    res.send({
+        status: 'ContestHub Server Running',
+        timestamp: new Date().toISOString(),
+        db_status: database ? 'Connected' : 'Disconnected'
+    });
+});
+
+// Middleware to ensure DB connection for other routes
 app.use(async (req, res, next) => {
+    // Skip for root already handled, but for safety:
+    if (req.path === '/') return next();
+
     try {
         await connectDB();
         next();
     } catch (error) {
+        console.error("Middleware DB Connection Error:", error);
         res.status(500).send({ message: "Database connection failed", error: error.message });
     }
-});
-
-// Routes
-app.get('/', (req, res) => {
-    res.send({
-        status: 'ContestHub Server Running',
-        timestamp: new Date(),
-        db_status: database ? 'Connected' : 'Disconnected'
-    });
 });
 
 // Auth API
 app.post('/auth/jwt', (req, res) => {
     const { email, role } = req.body;
+    if (!process.env.ACCESS_TOKEN_SECRET) {
+        return res.status(500).send({ message: 'Server Configuration Error: Missing JWT Secret' });
+    }
     const token = jwt.sign({ email: email.toLowerCase(), role }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
     res.send({ token });
 });
 
-// Middlewares
+// Token Verification
 const verifyToken = (req, res, next) => {
     if (!req.headers.authorization) {
         return res.status(401).send({ message: 'unauthorized access' });
@@ -122,12 +149,10 @@ const verifyCreator = async (req, res, next) => {
     next();
 };
 
-// --- DATA ROUTES ---
-
-// Helper to normalize email
 const normalizeEmail = (email) => email ? email.toLowerCase() : '';
 
-// Users
+// --- API ENDPOINTS ---
+
 app.get('/users/leaderboard', async (req, res) => {
     try {
         const result = await contestCollection.aggregate([
@@ -201,7 +226,6 @@ app.patch('/users/:id', verifyToken, async (req, res) => {
     res.send(result);
 });
 
-// Contests
 app.get('/contests', async (req, res) => {
     const search = req.query.search || "";
     const type = req.query.type;
@@ -216,7 +240,6 @@ app.get('/contests', async (req, res) => {
 });
 
 app.get('/contests/popular', async (req, res) => {
-    // Return top 8 approved contests sorted by participants
     const result = await contestCollection.find({ status: 'approved' })
         .sort({ participantsCount: -1 })
         .limit(8)
@@ -250,14 +273,11 @@ app.delete('/contests/:id', verifyToken, async (req, res) => {
         const result = await contestCollection.deleteOne({ _id: new ObjectId(id) });
         return res.send(result);
     }
-
     if (user.role === 'creator') {
         const contest = await contestCollection.findOne({ _id: new ObjectId(id) });
         if (!contest) return res.status(404).send({ message: 'Contest not found' });
-        // Normalize checking
         if (normalizeEmail(contest.creator.email) !== email) return res.status(403).send({ message: 'Forbidden' });
         if (contest.status !== 'pending') return res.status(403).send({ message: 'Can only delete pending' });
-
         const result = await contestCollection.deleteOne({ _id: new ObjectId(id) });
         return res.send(result);
     }
@@ -282,12 +302,10 @@ app.patch('/contests/:id', verifyToken, async (req, res) => {
         const result = await contestCollection.updateOne({ _id: new ObjectId(id) }, { $set: body });
         return res.send(result);
     }
-
     if (user.role === 'creator') {
         const contest = await contestCollection.findOne({ _id: new ObjectId(id) });
         if (!contest) return res.status(404).send({ message: 'Not found' });
         if (normalizeEmail(contest.creator.email) !== email) return res.status(403).send({ message: 'Forbidden' });
-
         const result = await contestCollection.updateOne({ _id: new ObjectId(id) }, { $set: body });
         return res.send(result);
     }
@@ -299,18 +317,22 @@ app.get('/contests/admin/all', verifyToken, verifyAdmin, async (req, res) => {
     res.send(result);
 });
 
-// Payments
 app.post('/payments/create-payment-intent', verifyToken, async (req, res) => {
+    if (!stripe) return res.status(503).send({ message: 'Payment service unavailable' });
     const { price } = req.body;
     const amount = parseInt(price * 100) || 0;
     if (amount < 1) return res.status(400).send({ message: "Invalid amount" });
 
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount,
-        currency: 'usd',
-        payment_method_types: ['card']
-    });
-    res.send({ clientSecret: paymentIntent.client_secret });
+    try {
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount,
+            currency: 'usd',
+            payment_method_types: ['card']
+        });
+        res.send({ clientSecret: paymentIntent.client_secret });
+    } catch (e) {
+        res.status(500).send({ message: e.message });
+    }
 });
 
 app.post('/payments', verifyToken, async (req, res) => {
@@ -362,7 +384,6 @@ app.get('/contests/won/:email', verifyToken, async (req, res) => {
     res.send(result);
 });
 
-// Submissions
 app.post('/submissions', verifyToken, async (req, res) => {
     const result = await submissionCollection.insertOne(req.body);
     res.send(result);
@@ -380,14 +401,12 @@ app.get('/submissions/:contestId', verifyToken, async (req, res) => {
     if (user.role === 'creator') {
         const contest = await contestCollection.findOne({ _id: new ObjectId(contestId) });
         if (!contest) return res.status(404).send({ message: 'Not found' });
-        // NOTE: Allow creator to view submissions even if email casing matches logic handled
         const result = await submissionCollection.find({ contestId }).toArray();
         return res.send(result);
     }
     return res.status(403).send({ message: 'Forbidden' });
 });
 
-// Winner
 app.patch('/contests/winner/:id', verifyToken, async (req, res) => {
     const id = req.params.id;
     const email = normalizeEmail(req.decoded.email);
@@ -402,15 +421,13 @@ app.patch('/contests/winner/:id', verifyToken, async (req, res) => {
         const contest = await contestCollection.findOne({ _id: new ObjectId(id) });
         if (!contest) return res.status(404).send({ message: 'Not found' });
         if (normalizeEmail(contest.creator.email) !== email) return res.status(403).send({ message: 'Forbidden' });
-
         const result = await contestCollection.updateOne({ _id: new ObjectId(id) }, { $set: { winner } });
         return res.send(result);
     }
     return res.status(403).send({ message: 'Forbidden' });
 });
 
-// Export
-module.exports = app;
+
 
 // Start if local
 if (require.main === module) {
@@ -418,3 +435,5 @@ if (require.main === module) {
         console.log(`Server running on port ${port}`);
     });
 }
+
+module.exports = app;

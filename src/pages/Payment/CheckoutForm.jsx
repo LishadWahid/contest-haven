@@ -22,7 +22,7 @@ const CheckoutForm = ({ contest, total }) => {
 
     useEffect(() => {
         if (price > 0) {
-            axiosSecure.post('/payments/create-payment-intent', { price })
+            axiosSecure.post('/create-payment-intent', { price })
                 .then(res => setClientSecret(res.data.clientSecret))
                 .catch(err => {
                     console.error('Error creating payment intent:', err);
